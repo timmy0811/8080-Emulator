@@ -150,6 +150,7 @@
   <ItemGroup>
     <ClInclude Include="src\core\Emulator8080.h" />
     <ClInclude Include="src\config.h" />
+    <ClInclude Include="src\core\Structures.h" />
     <ClInclude Include="src\windowsWrapper.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

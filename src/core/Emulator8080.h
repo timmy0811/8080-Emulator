@@ -22,7 +22,6 @@ namespace e8080 {
 		unsigned char* m_RomBuffer;
 		size_t m_RomBufferSize;
 
-		//char 
+		const char* getAsssemblerLine(unsigned char opcode);
 	};
 }
-
