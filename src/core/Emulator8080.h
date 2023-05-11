@@ -1,6 +1,9 @@
 #pragma once
 
 #include <iostream>
+#include <fmt/core.h>
+#include <iomanip>
+
 
 #include <string>
 #include <fstream>
@@ -15,13 +18,19 @@ namespace e8080 {
 		explicit Emulator8080() = default;
 		~Emulator8080();
 
-		bool disassembleFromFile();
+		bool disassemble();
 		bool loadRomFromFile(const std::string& path);
 
 	private:
 		unsigned char* m_RomBuffer;
 		size_t m_RomBufferSize;
 
-		const char* getAsssemblerLine(unsigned char opcode);
+	private:
+		const std::string getAsssemblerLine(unsigned char opcode, size_t& ptr);
+
+		inline const std::string ch2hex(char character) const;
+		inline unsigned char bufferB(size_t adr) const { return *(m_RomBuffer + adr); }
+		inline const std::string bufferBstr(size_t adr) const { return std::to_string(*(m_RomBuffer + adr)); }
+		inline const std::string bufferBstrH(size_t adr) const { return ch2hex(*(m_RomBuffer + adr)); }
 	};
 }
