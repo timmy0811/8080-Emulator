@@ -1,1 +1,2 @@
 D:\Git\8080-Emulator\x64\Debug\8080-Emulator.exe
+C:\Git\8080-Emulator\x64\Debug\8080-Emulator.exe

@@ -4,7 +4,6 @@
 #include <fmt/core.h>
 #include <iomanip>
 
-
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -29,6 +28,8 @@ namespace e8080 {
 		const std::string getAsssemblerLine(unsigned char opcode, size_t& ptr);
 
 		inline const std::string ch2hex(char character) const;
+		inline const std::string int162hex(unsigned short value) const;
+
 		inline unsigned char bufferB(size_t adr) const { return *(m_RomBuffer + adr); }
 		inline const std::string bufferBstr(size_t adr) const { return std::to_string(*(m_RomBuffer + adr)); }
 		inline const std::string bufferBstrH(size_t adr) const { return ch2hex(*(m_RomBuffer + adr)); }
