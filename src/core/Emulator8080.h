@@ -19,10 +19,13 @@ namespace e8080 {
 
 		bool disassemble();
 		bool loadRomFromFile(const std::string& path);
+		bool saveDisassembledToFile(const std::string& path);
 
 	private:
 		unsigned char* m_RomBuffer;
 		size_t m_RomBufferSize;
+		std::string m_RomPath;
+		std::string m_RomDisassembled;
 
 	private:
 		const std::string getAsssemblerLine(unsigned char opcode, size_t& ptr);
