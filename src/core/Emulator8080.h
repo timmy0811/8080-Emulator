@@ -38,11 +38,20 @@ namespace e8080 {
 		const std::string getAsssemblerLine(unsigned char opcode, size_t& ptr);
 		bool executeInstruction(unsigned char opcode);
 
-		inline const std::string ch2hex(char character) const;
-		inline const std::string int162hex(unsigned short value) const;
+		inline uint8_t getLowerNib(uint16_t val) const;
+		inline uint8_t getHigherNib(uint16_t val) const;
+		inline uint16_t add16(uint16_t a, uint16_t b);
+		void shiftLeft(uint8_t& Reg, size_t count);
+		void shiftRight(uint8_t& Reg, size_t count);
+		void incAdrReg(uint8_t& RegA, uint8_t& RegB);
+		void decAdrReg(uint8_t& RegA, uint8_t& RegB);
+		inline uint16_t regTo16(uint8_t Reg0, uint8_t Reg1) const;
+
+		inline const std::string chToHex(char character) const;
+		inline const std::string int16Tohex(unsigned short value) const;
 
 		inline unsigned char bufferB(size_t adr) const { return *(m_RomBuffer + adr); }
 		inline const std::string bufferBstr(size_t adr) const { return std::to_string(*(m_RomBuffer + adr)); }
-		inline const std::string bufferBstrH(size_t adr) const { return ch2hex(*(m_RomBuffer + adr)); }
+		inline const std::string bufferBstrH(size_t adr) const { return chToHex(*(m_RomBuffer + adr)); }
 	};
 }

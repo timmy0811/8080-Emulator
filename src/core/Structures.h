@@ -1,6 +1,6 @@
 #pragma once
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace e8080 {
 	struct Operation {
@@ -15,7 +15,6 @@ namespace e8080 {
 		uint8_t cy : 1;
 		uint8_t ac : 1;
 		uint8_t pad : 3;
-
 	};
 
 	struct State {

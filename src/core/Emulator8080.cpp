@@ -70,7 +70,7 @@ bool e8080::Emulator8080::saveDisassembledToFile(const std::string& path)
 	return false;
 }
 
-void e8080::Emulator8080::executeProgram(float clockMHz = 2.f)
+void e8080::Emulator8080::executeProgram(float clockMHz)
 {
 	m_State.PC = 0x0000;
 	m_ClockMHz = clockMHz;
@@ -353,18 +353,18 @@ const std::string e8080::Emulator8080::getAsssemblerLine(unsigned char opcode, s
 	{
 	case 1:
 		mnemonic = fmt::format("{} #{}h", mnemonic, bufferBstrH(++ptr));
-		binary = fmt::format("{} {}", ch2hex(opcode), bufferBstrH(ptr));
+		binary = fmt::format("{} {}", chToHex(opcode), bufferBstrH(ptr));
 		break;
 	case 2:
 		mnemonic = fmt::format("{} #{}{}h", mnemonic, bufferBstrH(++ptr), bufferBstrH(++ptr));
-		binary = fmt::format("{} {} {}", ch2hex(opcode), bufferBstrH(ptr - 1), bufferBstrH(ptr));
+		binary = fmt::format("{} {} {}", chToHex(opcode), bufferBstrH(ptr - 1), bufferBstrH(ptr));
 		break;
 	default:
-		binary = ch2hex(opcode);
+		binary = chToHex(opcode);
 		break;
 	}
 
-	std::string comment = fmt::format("; [0x{}]   {}\n", int162hex(progPtr), binary);
+	std::string comment = fmt::format("; [0x{}]   {}\n", int16Tohex(progPtr), binary);
 
 	line << std::left << std::setw(30) << mnemonic << comment;
 	return line.str();
@@ -376,255 +376,278 @@ bool e8080::Emulator8080::executeInstruction(unsigned char opcode)
 
 	switch (opcode) {
 		// Increment Decrement
-	case 0x00: break;
-	case 0x01: break;
-	case 0x02: break;
-	case 0x03: break;
-	case 0x04: break;
-	case 0x05: break;
-	case 0x06: break;
-	case 0x07: break;
-	case 0x09: break;
-	case 0x0a: break;
-	case 0x0b: break;
-	case 0x0c: break;
-	case 0x0d: break;
-	case 0x0e: break;
-	case 0x0f: break;
-	case 0x11: break;
-	case 0x12: break;
-	case 0x13: break;
-	case 0x14: break;
-	case 0x15: break;
-	case 0x16: break;
-	case 0x17: break;
-	case 0x19: break;
-	case 0x1a: break;
-	case 0x1b: break;
-	case 0x1c: break;
-	case 0x1d: break;
-	case 0x1e: break;
-	case 0x1f: break;
-	case 0x20: break;
-	case 0x21: break;
-	case 0x22: break;
-	case 0x23: break;
-	case 0x24: break;
-	case 0x25: break;
-	case 0x26: break;
-	case 0x27: break;
-	case 0x29: break;
-	case 0x2a: break;
-	case 0x2b: break;
-	case 0x2c: break;
-	case 0x2d: break;
-	case 0x2e: break;
-	case 0x2f: break;
-	case 0x30: break;
-	case 0x31: break;
-	case 0x32: break;
-	case 0x33: break;
-	case 0x34: break;
-	case 0x35: break;
-	case 0x36: break;
-	case 0x37: break;
-	case 0x39: break;
-	case 0x3a: break;
-	case 0x3b: break;
-	case 0x3c: break;
-	case 0x3d: break;
-	case 0x3e: break;
-	case 0x3f: break;
+	case 0x00: cycles = 4; break;
+	case 0x01: cycles = 10;
+		m_State.C = m_RomBuffer[++m_State.PC];
+		m_State.B = m_RomBuffer[++m_State.PC];
+		break;
+	case 0x02: cycles = 7;
+		m_State.mem[regTo16(m_State.B, m_State.C)];
+		break;
+	case 0x03: cycles = 5;
+		incAdrReg(m_State.B, m_State.C);
+		break;
+	case 0x04: cycles = 5;
+		m_State.B++;
+		break;
+	case 0x05: cycles = 5;
+		m_State.B--;
+		break;
+	case 0x06: cycles = 7;
+		m_State.B = m_RomBuffer[++m_State.PC];
+		break;
+	case 0x07: cycles = 4;
+		shiftLeft(m_State.A, 1);
+		break;
+	case 0x09: cycles = 10;
+		uint16_t sum = add16(regTo16(m_State.H, m_State.L), regTo16(m_State.B, m_State.C));
+		m_State.H = getHigherNib(sum);
+		m_State.L = getHigherNib(sum);
+		break;
+	case 0x0a: cycles = 7;
+		m_State.A = regTo16(m_State.B, m_State.C);
+		break;
+	case 0x0b: cycles = 5;
+		decAdrReg(m_State.B, m_State.C);
+		break;
+	case 0x0c: cycles = 5; break;
+	case 0x0d: cycles = 5; break;
+	case 0x0e: cycles = 7; break;
+	case 0x0f: cycles = 4; break;
+	case 0x11: cycles = 10; break;
+	case 0x12: cycles = 7; break;
+	case 0x13: cycles = 5; break;
+	case 0x14: cycles = 5; break;
+	case 0x15: cycles = 5; break;
+	case 0x16: cycles = 7; break;
+	case 0x17: cycles = 4; break;
+	case 0x19: cycles = 10; break;
+	case 0x1a: cycles = 7; break;
+	case 0x1b: cycles = 5; break;
+	case 0x1c: cycles = 5; break;
+	case 0x1d: cycles = 5; break;
+	case 0x1e: cycles = 7; break;
+	case 0x1f: cycles = 4; break;
+	case 0x20: cycles = 4; break;
+	case 0x21: cycles = 10; break;
+	case 0x22: cycles = 16; break;
+	case 0x23: cycles = 5; break;
+	case 0x24: cycles = 5; break;
+	case 0x25: cycles = 5; break;
+	case 0x26: cycles = 7; break;
+	case 0x27: cycles = 4; break;
+	case 0x29: cycles = 10; break;
+	case 0x2a: cycles = 16; break;
+	case 0x2b: cycles = 5; break;
+	case 0x2c: cycles = 5; break;
+	case 0x2d: cycles = 5; break;
+	case 0x2e: cycles = 7; break;
+	case 0x2f: cycles = 4; break;
+	case 0x30: cycles = 4; break;
+	case 0x31: cycles = 10; break;
+	case 0x32: cycles = 13; break;
+	case 0x33: cycles = 5; break;
+	case 0x34: cycles = 10; break;
+	case 0x35: cycles = 10; break;
+	case 0x36: cycles = 10; break;
+	case 0x37: cycles = 4; break;
+	case 0x39: cycles = 10; break;
+	case 0x3a: cycles = 13; break;
+	case 0x3b: cycles = 5; break;
+	case 0x3c: cycles = 5; break;
+	case 0x3d: cycles = 5; break;
+	case 0x3e: cycles = 7; break;
+	case 0x3f: cycles = 4; break;
 
-	case 0x40: break;
-	case 0x41: break;
-	case 0x42: break;
-	case 0x43: break;
-	case 0x44: break;
-	case 0x45: break;
-	case 0x46: break;
-	case 0x47: break;
-	case 0x48: break;
-	case 0x49: break;
-	case 0x4a: break;
-	case 0x4b: break;
-	case 0x4c: break;
-	case 0x4d: break;
-	case 0x4e: break;
-	case 0x4f: break;
-	case 0x50: break;
-	case 0x51: break;
-	case 0x52: break;
-	case 0x53: break;
-	case 0x54: break;
-	case 0x55: break;
-	case 0x56: break;
-	case 0x57: break;
-	case 0x58: break;
-	case 0x59: break;
-	case 0x5a: break;
-	case 0x5b: break;
-	case 0x5c: break;
-	case 0x5d: break;
-	case 0x5e: break;
-	case 0x5f: break;
-	case 0x60: break;
-	case 0x61: break;
-	case 0x62: break;
-	case 0x63: break;
-	case 0x64: break;
-	case 0x65: break;
-	case 0x66: break;
-	case 0x67: break;
-	case 0x68: break;
-	case 0x69: break;
-	case 0x6a: break;
-	case 0x6b: break;
-	case 0x6c: break;
-	case 0x6d: break;
-	case 0x6e: break;
-	case 0x6f: break;
-	case 0x70: break;
-	case 0x71: break;
-	case 0x72: break;
-	case 0x73: break;
-	case 0x74: break;
-	case 0x75: break;
-	case 0x76: break;
-	case 0x77: break;
-	case 0x78: break;
-	case 0x79: break;
-	case 0x7a: break;
-	case 0x7b: break;
-	case 0x7c: break;
-	case 0x7d: break;
-	case 0x7e: break;
-	case 0x7f: break;
+	case 0x40: cycles = 4; break;
+	case 0x41: cycles = 4; break;
+	case 0x42: cycles = 4; break;
+	case 0x43: cycles = 4; break;
+	case 0x44: cycles = 4; break;
+	case 0x45: cycles = 4; break;
+	case 0x46: cycles = 7; break;
+	case 0x47: cycles = 4; break;
+	case 0x48: cycles = 4; break;
+	case 0x49: cycles = 4; break;
+	case 0x4a: cycles = 4; break;
+	case 0x4b: cycles = 4; break;
+	case 0x4c: cycles = 4; break;
+	case 0x4d: cycles = 4; break;
+	case 0x4e: cycles = 7; break;
+	case 0x4f: cycles = 4; break;
+	case 0x50: cycles = 4; break;
+	case 0x51: cycles = 4; break;
+	case 0x52: cycles = 4; break;
+	case 0x53: cycles = 4; break;
+	case 0x54: cycles = 4; break;
+	case 0x55: cycles = 4; break;
+	case 0x56: cycles = 7; break;
+	case 0x57: cycles = 4; break;
+	case 0x58: cycles = 4; break;
+	case 0x59: cycles = 4; break;
+	case 0x5a: cycles = 4; break;
+	case 0x5b: cycles = 4; break;
+	case 0x5c: cycles = 4; break;
+	case 0x5d: cycles = 4; break;
+	case 0x5e: cycles = 7; break;
+	case 0x5f: cycles = 4; break;
+	case 0x60: cycles = 4; break;
+	case 0x61: cycles = 4; break;
+	case 0x62: cycles = 4; break;
+	case 0x63: cycles = 4; break;
+	case 0x64: cycles = 4; break;
+	case 0x65: cycles = 4; break;
+	case 0x66: cycles = 7; break;
+	case 0x67: cycles = 4; break;
+	case 0x68: cycles = 4; break;
+	case 0x69: cycles = 4; break;
+	case 0x6a: cycles = 4; break;
+	case 0x6b: cycles = 4; break;
+	case 0x6c: cycles = 4; break;
+	case 0x6d: cycles = 4; break;
+	case 0x6e: cycles = 7; break;
+	case 0x6f: cycles = 4; break;
+	case 0x70: cycles = 7; break;
+	case 0x71: cycles = 7; break;
+	case 0x72: cycles = 7; break;
+	case 0x73: cycles = 7; break;
+	case 0x74: cycles = 7; break;
+	case 0x75: cycles = 7; break;
+	case 0x76: cycles = 7; break;
+	case 0x77: cycles = 7; break;
+	case 0x78: cycles = 4; break;
+	case 0x79: cycles = 4; break;
+	case 0x7a: cycles = 4; break;
+	case 0x7b: cycles = 4; break;
+	case 0x7c: cycles = 4; break;
+	case 0x7d: cycles = 4; break;
+	case 0x7e: cycles = 7; break;
+	case 0x7f: cycles = 4; break;
 
-	case 0x80: break;
-	case 0x81: break;
-	case 0x82: break;
-	case 0x83: break;
-	case 0x84: break;
-	case 0x85: break;
-	case 0x86: break;
-	case 0x87: break;
-	case 0x88: break;
-	case 0x89: break;
-	case 0x8a: break;
-	case 0x8b: break;
-	case 0x8c: break;
-	case 0x8d: break;
-	case 0x8e: break;
-	case 0x8f: break;
-	case 0x90: break;
-	case 0x91: break;
-	case 0x92: break;
-	case 0x93: break;
-	case 0x94: break;
-	case 0x95: break;
-	case 0x96: break;
-	case 0x97: break;
-	case 0x98: break;
-	case 0x99: break;
-	case 0x9a: break;
-	case 0x9b: break;
-	case 0x9c: break;
-	case 0x9d: break;
-	case 0x9e: break;
-	case 0x9f: break;
-	case 0xa0: break;
-	case 0xa1: break;
-	case 0xa2: break;
-	case 0xa3: break;
-	case 0xa4: break;
-	case 0xa5: break;
-	case 0xa6: break;
-	case 0xa7: break;
-	case 0xa8: break;
-	case 0xa9: break;
-	case 0xaa: break;
-	case 0xab: break;
-	case 0xac: break;
-	case 0xad: break;
-	case 0xae: break;
-	case 0xaf: break;
-	case 0xb0: break;
-	case 0xb1: break;
-	case 0xb2: break;
-	case 0xb3: break;
-	case 0xb4: break;
-	case 0xb5: break;
-	case 0xb6: break;
-	case 0xb7: break;
-	case 0xb8: break;
-	case 0xb9: break;
-	case 0xba: break;
-	case 0xbb: break;
-	case 0xbc: break;
-	case 0xbd: break;
-	case 0xbe: break;
-	case 0xbf: break;
+	case 0x80: cycles = 4; break;
+	case 0x81: cycles = 4; break;
+	case 0x82: cycles = 4; break;
+	case 0x83: cycles = 4; break;
+	case 0x84: cycles = 4; break;
+	case 0x85: cycles = 4; break;
+	case 0x86: cycles = 7; break;
+	case 0x87: cycles = 4; break;
+	case 0x88: cycles = 4; break;
+	case 0x89: cycles = 4; break;
+	case 0x8a: cycles = 4; break;
+	case 0x8b: cycles = 4; break;
+	case 0x8c: cycles = 4; break;
+	case 0x8d: cycles = 4; break;
+	case 0x8e: cycles = 7; break;
+	case 0x8f: cycles = 4; break;
+	case 0x90: cycles = 4; break;
+	case 0x91: cycles = 4; break;
+	case 0x92: cycles = 4; break;
+	case 0x93: cycles = 4; break;
+	case 0x94: cycles = 4; break;
+	case 0x95: cycles = 4; break;
+	case 0x96: cycles = 7; break;
+	case 0x97: cycles = 4; break;
+	case 0x98: cycles = 4; break;
+	case 0x99: cycles = 4; break;
+	case 0x9a: cycles = 4; break;
+	case 0x9b: cycles = 4; break;
+	case 0x9c: cycles = 4; break;
+	case 0x9d: cycles = 4; break;
+	case 0x9e: cycles = 7; break;
+	case 0x9f: cycles = 4; break;
+	case 0xa0: cycles = 4; break;
+	case 0xa1: cycles = 4; break;
+	case 0xa2: cycles = 4; break;
+	case 0xa3: cycles = 4; break;
+	case 0xa4: cycles = 4; break;
+	case 0xa5: cycles = 4; break;
+	case 0xa6: cycles = 7; break;
+	case 0xa7: cycles = 4; break;
+	case 0xa8: cycles = 4; break;
+	case 0xa9: cycles = 4; break;
+	case 0xaa: cycles = 4; break;
+	case 0xab: cycles = 4; break;
+	case 0xac: cycles = 4; break;
+	case 0xad: cycles = 4; break;
+	case 0xae: cycles = 7; break;
+	case 0xaf: cycles = 4; break;
+	case 0xb0: cycles = 4; break;
+	case 0xb1: cycles = 4; break;
+	case 0xb2: cycles = 4; break;
+	case 0xb3: cycles = 4; break;
+	case 0xb4: cycles = 4; break;
+	case 0xb5: cycles = 4; break;
+	case 0xb6: cycles = 7; break;
+	case 0xb7: cycles = 4; break;
+	case 0xb8: cycles = 4; break;
+	case 0xb9: cycles = 4; break;
+	case 0xba: cycles = 4; break;
+	case 0xbb: cycles = 4; break;
+	case 0xbc: cycles = 4; break;
+	case 0xbd: cycles = 4; break;
+	case 0xbe: cycles = 7; break;
+	case 0xbf: cycles = 4; break;
 
-	case 0xc0: break;
-	case 0xc1: break;
-	case 0xc2: break;
-	case 0xc3: break;
-	case 0xc4: break;
-	case 0xc5: break;
-	case 0xc6: break;
-	case 0xc7: break;
-	case 0xc8: break;
-	case 0xc9: break;
-	case 0xca: break;
-	case 0xcc: break;
-	case 0xcd: break;
-	case 0xce: break;
-	case 0xcf: break;
-	case 0xd0: break;
-	case 0xd1: break;
-	case 0xd2: break;
-	case 0xd3: break;
-	case 0xd4: break;
-	case 0xd5: break;
-	case 0xd6: break;
-	case 0xd7: break;
-	case 0xd8: break;
-	case 0xda: break;
-	case 0xdb: break;
-	case 0xdc: break;
-	case 0xde: break;
-	case 0xdf: break;
-	case 0xe0: break;
-	case 0xe1: break;
-	case 0xe2: break;
-	case 0xe3: break;
-	case 0xe4: break;
-	case 0xe5: break;
-	case 0xe6: break;
-	case 0xe7: break;
-	case 0xe8: break;
-	case 0xe9: break;
-	case 0xea: break;
-	case 0xeb: break;
-	case 0xec: break;
-	case 0xee: break;
-	case 0xef: break;
-	case 0xf0: break;
-	case 0xf1: break;
-	case 0xf2: break;
-	case 0xf3: break;
-	case 0xf4: break;
-	case 0xf5: break;
-	case 0xf6: break;
-	case 0xf7: break;
-	case 0xf8: break;
-	case 0xf9: break;
-	case 0xfa: break;
-	case 0xfb: break;
-	case 0xfc: break;
-	case 0xfe: break;
-	case 0xff: break;
+	case 0xc0: cycles = 999; break;
+	case 0xc1: cycles = 10; break;
+	case 0xc2: cycles = 10; break;
+	case 0xc3: cycles = 10; break;
+	case 0xc4: cycles = 999; break;
+	case 0xc5: cycles = 11; break;
+	case 0xc6: cycles = 7; break;
+	case 0xc7: cycles = 11; break;
+	case 0xc8: cycles = 999; break;
+	case 0xc9: cycles = 10; break;
+	case 0xca: cycles = 10; break;
+	case 0xcc: cycles = 999; break;
+	case 0xcd: cycles = 17; break;
+	case 0xce: cycles = 7; break;
+	case 0xcf: cycles = 11; break;
+	case 0xd0: cycles = 999; break;
+	case 0xd1: cycles = 10; break;
+	case 0xd2: cycles = 10; break;
+	case 0xd3: cycles = 10; break;
+	case 0xd4: cycles = 999; break;
+	case 0xd5: cycles = 11; break;
+	case 0xd6: cycles = 7; break;
+	case 0xd7: cycles = 11; break;
+	case 0xd8: cycles = 999; break;
+	case 0xda: cycles = 10; break;
+	case 0xdb: cycles = 10; break;
+	case 0xdc: cycles = 999; break;
+	case 0xde: cycles = 7; break;
+	case 0xdf: cycles = 11; break;
+	case 0xe0: cycles = 999; break;
+	case 0xe1: cycles = 10; break;
+	case 0xe2: cycles = 10; break;
+	case 0xe3: cycles = 18; break;
+	case 0xe4: cycles = 99; break;
+	case 0xe5: cycles = 11; break;
+	case 0xe6: cycles = 7; break;
+	case 0xe7: cycles = 11; break;
+	case 0xe8: cycles = 99; break;
+	case 0xe9: cycles = 5; break;
+	case 0xea: cycles = 10; break;
+	case 0xeb: cycles = 5; break;
+	case 0xec: cycles = 999; break;
+	case 0xee: cycles = 7; break;
+	case 0xef: cycles = 11; break;
+	case 0xf0: cycles = 999; break;
+	case 0xf1: cycles = 10; break;
+	case 0xf2: cycles = 10; break;
+	case 0xf3: cycles = 4; break;
+	case 0xf4: cycles = 999; break;
+	case 0xf5: cycles = 11; break;
+	case 0xf6: cycles = 7; break;
+	case 0xf7: cycles = 11; break;
+	case 0xf8: cycles = 999; break;
+	case 0xf9: cycles = 5; break;
+	case 0xfa: cycles = 10; break;
+	case 0xfb: cycles = 4; break;
+	case 0xfc: cycles = 17; break;
+	case 0xfe: cycles = 7; break;
+	case 0xff: cycles = 11; break;
 
 	default: break;
 	}
@@ -632,7 +655,60 @@ bool e8080::Emulator8080::executeInstruction(unsigned char opcode)
 	return true;
 }
 
-inline const std::string e8080::Emulator8080::ch2hex(char character) const
+inline uint8_t e8080::Emulator8080::getLowerNib(uint16_t val) const
+{
+	val <<= 8;
+	val >>= 8;
+	return static_cast<uint8_t>(val);
+}
+
+inline uint8_t e8080::Emulator8080::getHigherNib(uint16_t val) const
+{
+	val >>= 8;
+	return static_cast<uint8_t>(val);
+}
+
+uint16_t e8080::Emulator8080::add16(uint16_t a, uint16_t b)
+{
+	return a + b;
+}
+
+void e8080::Emulator8080::shiftLeft(uint8_t& Reg, size_t count)
+{
+	Reg = (Reg << count) | (Reg >> 8 - count);
+	if ((Reg & 1) == 1) m_State.flags.cy;
+}
+
+void e8080::Emulator8080::shiftRight(uint8_t& Reg, size_t count)
+{
+	Reg = (Reg >> count) | (Reg >> 8 - count);
+	if ((Reg & 0b10000000) == 1) m_State.flags.cy;
+}
+
+void e8080::Emulator8080::incAdrReg(uint8_t& RegA, uint8_t& RegB)
+{
+	if (++RegB == 0x00) {
+		RegA++;
+	}
+}
+
+void e8080::Emulator8080::decAdrReg(uint8_t& RegA, uint8_t& RegB)
+{
+	if (--RegB == 0xFF) {
+		--RegA;
+	}
+}
+
+inline uint16_t e8080::Emulator8080::regTo16(uint8_t Reg0, uint8_t Reg1) const
+{
+	uint16_t adrOut = Reg0;
+	adrOut <<= 8;
+	adrOut += Reg1;
+
+	return adrOut;
+}
+
+inline const std::string e8080::Emulator8080::chToHex(char character) const
 {
 	std::ostringstream stream;
 	stream << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(static_cast<unsigned char>(character));
@@ -641,7 +717,7 @@ inline const std::string e8080::Emulator8080::ch2hex(char character) const
 	return str;
 }
 
-inline const std::string e8080::Emulator8080::int162hex(unsigned short value) const
+inline const std::string e8080::Emulator8080::int16Tohex(unsigned short value) const
 {
 	std::ostringstream stream;
 	stream << std::hex << std::setw(4) << std::setfill('0') << value;
