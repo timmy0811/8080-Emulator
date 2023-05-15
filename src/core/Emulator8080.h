@@ -15,7 +15,7 @@ namespace e8080 {
 	class Emulator8080
 	{
 	public:
-		explicit Emulator8080() = default;
+		explicit Emulator8080();
 		~Emulator8080();
 
 		bool disassemble();
@@ -38,14 +38,28 @@ namespace e8080 {
 		const std::string getAsssemblerLine(unsigned char opcode, size_t& ptr);
 		bool executeInstruction(unsigned char opcode);
 
-		inline uint8_t getLowerNib(uint16_t val) const;
-		inline uint8_t getHigherNib(uint16_t val) const;
+		void bitAndAcc(uint8_t val);
+		void bitXorAcc(uint8_t val);
+		void bitOrAcc(uint8_t val);
+
+		inline uint8_t popStack();
+		inline void pushStack(uint8_t val);
+
+		void addToAcc(uint8_t valA, uint8_t valB = 0);
+		void subFromAcc(uint8_t valA, uint8_t valB = 0, bool cmp = false);
+		void addToAccBF(uint8_t valA, uint8_t valB = 0);	// valB is bit-field
+		void subFromAccBF(uint8_t valA, uint8_t valB = 0);	// valB is bit-field
+
 		inline uint16_t add16(uint16_t a, uint16_t b);
 		void shiftLeft(uint8_t& Reg, size_t count);
 		void shiftRight(uint8_t& Reg, size_t count);
 		void incAdrReg(uint8_t& RegA, uint8_t& RegB);
 		void decAdrReg(uint8_t& RegA, uint8_t& RegB);
+
+		inline bool checkParity(uint8_t val) const;
 		inline uint16_t regTo16(uint8_t Reg0, uint8_t Reg1) const;
+		inline uint8_t getLowerNib(uint16_t val) const;
+		inline uint8_t getHigherNib(uint16_t val) const;
 
 		inline const std::string chToHex(char character) const;
 		inline const std::string int16Tohex(unsigned short value) const;

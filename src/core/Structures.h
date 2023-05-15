@@ -28,8 +28,19 @@ namespace e8080 {
 
 		uint16_t SP;
 		uint16_t PC;
-		uint16_t* mem;
+		uint8_t* mem;
 
 		Flags flags;
+
+		State(bool clearOnInit) {
+			mem = (uint8_t*)std::malloc(65536);
+			if (clearOnInit) {
+				std::fill(mem, mem + 65536, 0x00);
+			}
+		}
+
+		~State() {
+			free(mem);
+		}
 	};
 }
