@@ -44,6 +44,8 @@ namespace e8080 {
 
 		inline uint8_t popStack();
 		inline void pushStack(uint8_t val);
+		void call();
+		void ret();
 
 		void addToAcc(uint8_t valA, uint8_t valB = 0);
 		void subFromAcc(uint8_t valA, uint8_t valB = 0, bool cmp = false);

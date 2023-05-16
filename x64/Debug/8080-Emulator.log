@@ -1,203 +1,48 @@
 ﻿  Emulator8080.cpp
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(408,22): warning C4244: "=": Konvertierung von "uint16_t" in "uint8_t", möglicher Datenverlust
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(457,15): error C2065: "reg": nichtdeklarierter Bezeichner
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(458,3): error C2065: "reg": nichtdeklarierter Bezeichner
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(461,3): error C2065: "reg": nichtdeklarierter Bezeichner
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(461,13): error C2065: "reg": nichtdeklarierter Bezeichner
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(464,3): error C2065: "reg": nichtdeklarierter Bezeichner
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(407,2): error C2360: Initialisierung von "sum" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(403): message : Siehe Deklaration von "sum"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(410,2): error C2360: Initialisierung von "sum" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(403): message : Siehe Deklaration von "sum"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(413,2): error C2360: Initialisierung von "sum" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(403): message : Siehe Deklaration von "sum"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(416,2): error C2360: Initialisierung von "sum" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(403): message : Siehe Deklaration von "sum"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(419,2): error C2360: Initialisierung von "sum" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(403): message : Siehe Deklaration von "sum"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(422,2): error C2360: Initialisierung von "sum" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(403): message : Siehe Deklaration von "sum"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(425,2): error C2360: Initialisierung von "sum" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(403): message : Siehe Deklaration von "sum"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(429,2): error C2360: Initialisierung von "sum" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(403): message : Siehe Deklaration von "sum"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(432,2): error C2360: Initialisierung von "sum" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(403): message : Siehe Deklaration von "sum"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(435,2): error C2360: Initialisierung von "sum" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(403): message : Siehe Deklaration von "sum"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(438,2): error C2360: Initialisierung von "sum" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(403): message : Siehe Deklaration von "sum"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(441,2): error C2360: Initialisierung von "sum" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(403): message : Siehe Deklaration von "sum"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(444,2): error C2360: Initialisierung von "sum" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(403): message : Siehe Deklaration von "sum"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(450,2): error C2360: Initialisierung von "msb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(445): message : Siehe Deklaration von "msb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(450,2): error C2360: Initialisierung von "sum" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(403): message : Siehe Deklaration von "sum"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(451,2): error C2360: Initialisierung von "msb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(445): message : Siehe Deklaration von "msb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(451,2): error C2360: Initialisierung von "sum" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(403): message : Siehe Deklaration von "sum"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(452,2): error C2360: Initialisierung von "msb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(445): message : Siehe Deklaration von "msb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(452,2): error C2360: Initialisierung von "sum" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(403): message : Siehe Deklaration von "sum"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(453,2): error C2360: Initialisierung von "msb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(445): message : Siehe Deklaration von "msb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(453,2): error C2360: Initialisierung von "sum" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(403): message : Siehe Deklaration von "sum"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(454,2): error C2360: Initialisierung von "msb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(445): message : Siehe Deklaration von "msb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(454,2): error C2360: Initialisierung von "sum" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(403): message : Siehe Deklaration von "sum"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(455,2): error C2360: Initialisierung von "msb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(445): message : Siehe Deklaration von "msb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(455,2): error C2360: Initialisierung von "sum" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(403): message : Siehe Deklaration von "sum"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(456,2): error C2360: Initialisierung von "msb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(445): message : Siehe Deklaration von "msb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(456,2): error C2360: Initialisierung von "sum" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(403): message : Siehe Deklaration von "sum"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(466,2): error C2360: Initialisierung von "lsb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(457): message : Siehe Deklaration von "lsb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(466,2): error C2360: Initialisierung von "msb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(445): message : Siehe Deklaration von "msb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(466,2): error C2360: Initialisierung von "sum" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(403): message : Siehe Deklaration von "sum"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(467,2): error C2360: Initialisierung von "lsb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(457): message : Siehe Deklaration von "lsb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(467,2): error C2360: Initialisierung von "msb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(445): message : Siehe Deklaration von "msb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(467,2): error C2360: Initialisierung von "sum" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(403): message : Siehe Deklaration von "sum"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(468,2): error C2360: Initialisierung von "lsb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(457): message : Siehe Deklaration von "lsb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(468,2): error C2360: Initialisierung von "msb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(445): message : Siehe Deklaration von "msb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(468,2): error C2360: Initialisierung von "sum" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(403): message : Siehe Deklaration von "sum"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(469,2): error C2360: Initialisierung von "lsb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(457): message : Siehe Deklaration von "lsb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(469,2): error C2360: Initialisierung von "msb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(445): message : Siehe Deklaration von "msb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(469,2): error C2360: Initialisierung von "sum" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(403): message : Siehe Deklaration von "sum"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(470,2): error C2360: Initialisierung von "lsb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(457): message : Siehe Deklaration von "lsb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(470,2): error C2360: Initialisierung von "msb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(445): message : Siehe Deklaration von "msb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(470,2): error C2360: Initialisierung von "sum" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(403): message : Siehe Deklaration von "sum"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(471,2): error C2360: Initialisierung von "lsb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(457): message : Siehe Deklaration von "lsb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(471,2): error C2360: Initialisierung von "msb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(445): message : Siehe Deklaration von "msb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(471,2): error C2360: Initialisierung von "sum" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(403): message : Siehe Deklaration von "sum"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(472,2): error C2360: Initialisierung von "lsb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(457): message : Siehe Deklaration von "lsb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(472,2): error C2360: Initialisierung von "msb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(445): message : Siehe Deklaration von "msb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(472,2): error C2360: Initialisierung von "sum" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(403): message : Siehe Deklaration von "sum"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(473,2): error C2360: Initialisierung von "lsb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(457): message : Siehe Deklaration von "lsb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(473,2): error C2360: Initialisierung von "msb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(445): message : Siehe Deklaration von "msb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(473,2): error C2360: Initialisierung von "sum" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(403): message : Siehe Deklaration von "sum"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(474,2): error C2360: Initialisierung von "lsb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(457): message : Siehe Deklaration von "lsb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(474,2): error C2360: Initialisierung von "msb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(445): message : Siehe Deklaration von "msb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(474,2): error C2360: Initialisierung von "sum" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(403): message : Siehe Deklaration von "sum"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(475,2): error C2360: Initialisierung von "lsb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(457): message : Siehe Deklaration von "lsb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(475,2): error C2360: Initialisierung von "msb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(445): message : Siehe Deklaration von "msb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(475,2): error C2360: Initialisierung von "sum" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(403): message : Siehe Deklaration von "sum"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(476,2): error C2360: Initialisierung von "lsb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(457): message : Siehe Deklaration von "lsb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(476,2): error C2360: Initialisierung von "msb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(445): message : Siehe Deklaration von "msb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(476,2): error C2360: Initialisierung von "sum" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(403): message : Siehe Deklaration von "sum"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(477,2): error C2360: Initialisierung von "lsb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(457): message : Siehe Deklaration von "lsb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(477,2): error C2360: Initialisierung von "msb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(445): message : Siehe Deklaration von "msb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(477,2): error C2360: Initialisierung von "sum" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(403): message : Siehe Deklaration von "sum"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(478,2): error C2360: Initialisierung von "lsb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(457): message : Siehe Deklaration von "lsb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(478,2): error C2360: Initialisierung von "msb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(445): message : Siehe Deklaration von "msb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(478,2): error C2360: Initialisierung von "sum" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(403): message : Siehe Deklaration von "sum"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(479,2): error C2360: Initialisierung von "lsb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(457): message : Siehe Deklaration von "lsb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(479,2): error C2360: Initialisierung von "msb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(445): message : Siehe Deklaration von "msb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(479,2): error C2360: Initialisierung von "sum" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(403): message : Siehe Deklaration von "sum"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(480,2): error C2360: Initialisierung von "lsb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(457): message : Siehe Deklaration von "lsb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(480,2): error C2360: Initialisierung von "msb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(445): message : Siehe Deklaration von "msb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(480,2): error C2360: Initialisierung von "sum" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(403): message : Siehe Deklaration von "sum"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(481,2): error C2360: Initialisierung von "lsb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(457): message : Siehe Deklaration von "lsb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(481,2): error C2360: Initialisierung von "msb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(445): message : Siehe Deklaration von "msb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(481,2): error C2360: Initialisierung von "sum" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(403): message : Siehe Deklaration von "sum"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(482,2): error C2360: Initialisierung von "lsb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(457): message : Siehe Deklaration von "lsb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(482,2): error C2360: Initialisierung von "msb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(445): message : Siehe Deklaration von "msb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(482,2): error C2360: Initialisierung von "sum" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(403): message : Siehe Deklaration von "sum"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(483,2): error C2360: Initialisierung von "lsb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(457): message : Siehe Deklaration von "lsb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(483,2): error C2360: Initialisierung von "msb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(445): message : Siehe Deklaration von "msb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(483,2): error C2360: Initialisierung von "sum" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(403): message : Siehe Deklaration von "sum"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(484,2): error C2360: Initialisierung von "lsb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(457): message : Siehe Deklaration von "lsb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(484,2): error C2360: Initialisierung von "msb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(445): message : Siehe Deklaration von "msb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(484,2): error C2360: Initialisierung von "sum" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(403): message : Siehe Deklaration von "sum"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(485,2): error C2360: Initialisierung von "lsb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(457): message : Siehe Deklaration von "lsb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(485,2): error C2360: Initialisierung von "msb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(445): message : Siehe Deklaration von "msb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(485,2): error C2360: Initialisierung von "sum" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(403): message : Siehe Deklaration von "sum"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(486,2): error C2360: Initialisierung von "lsb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(457): message : Siehe Deklaration von "lsb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(486,2): error C2360: Initialisierung von "msb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(445): message : Siehe Deklaration von "msb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(486,2): error C2360: Initialisierung von "sum" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(403): message : Siehe Deklaration von "sum"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(487,2): error C2360: Initialisierung von "lsb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(457): message : Siehe Deklaration von "lsb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(487,2): error C2360: Initialisierung von "msb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(445): message : Siehe Deklaration von "msb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(487,2): error C2360: Initialisierung von "sum" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(403): message : Siehe Deklaration von "sum"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(488,2): error C2360: Initialisierung von "lsb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(457): message : Siehe Deklaration von "lsb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(488,2): error C2360: Initialisierung von "msb" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(445): message : Siehe Deklaration von "msb"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(488,2): error C2360: Initialisierung von "sum" durch "case"-Bezeichnung übersprungen
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(403): message : Siehe Deklaration von "sum"
-D:\Git\8080-Emulator\src\core\Emulator8080.cpp(377,1): fatal error C1003: Mehr als 100 Fehler gefunden; Kompilierung wird abgebrochen.
-  config.cpp
-  main.cpp
-  Code wird generiert...
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1276,13): warning C4244: "Argument": Konvertierung von "uint16_t" in "uint8_t", möglicher Datenverlust
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1209,2): error C2360: Initialisierung von "temp" durch "case"-Bezeichnung übersprungen
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1201): message : Siehe Deklaration von "temp"
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1219,2): error C2360: Initialisierung von "temp" durch "case"-Bezeichnung übersprungen
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1201): message : Siehe Deklaration von "temp"
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1222,2): error C2360: Initialisierung von "temp" durch "case"-Bezeichnung übersprungen
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1201): message : Siehe Deklaration von "temp"
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1228,2): error C2360: Initialisierung von "temp" durch "case"-Bezeichnung übersprungen
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1201): message : Siehe Deklaration von "temp"
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1237,2): error C2360: Initialisierung von "temp" durch "case"-Bezeichnung übersprungen
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1201): message : Siehe Deklaration von "temp"
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1248,2): error C2360: Initialisierung von "temp" durch "case"-Bezeichnung übersprungen
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1201): message : Siehe Deklaration von "temp"
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1256,2): error C2360: Initialisierung von "temp" durch "case"-Bezeichnung übersprungen
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1201): message : Siehe Deklaration von "temp"
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1257,2): error C2360: Initialisierung von "temp" durch "case"-Bezeichnung übersprungen
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1201): message : Siehe Deklaration von "temp"
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1267,2): error C2360: Initialisierung von "temp" durch "case"-Bezeichnung übersprungen
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1201): message : Siehe Deklaration von "temp"
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1278,2): error C2360: Initialisierung von "temp" durch "case"-Bezeichnung übersprungen
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1201): message : Siehe Deklaration von "temp"
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1281,2): error C2360: Initialisierung von "temp" durch "case"-Bezeichnung übersprungen
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1201): message : Siehe Deklaration von "temp"
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1287,2): error C2360: Initialisierung von "temp" durch "case"-Bezeichnung übersprungen
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1201): message : Siehe Deklaration von "temp"
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1296,2): error C2360: Initialisierung von "temp" durch "case"-Bezeichnung übersprungen
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1201): message : Siehe Deklaration von "temp"
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1299,2): error C2360: Initialisierung von "temp" durch "case"-Bezeichnung übersprungen
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1201): message : Siehe Deklaration von "temp"
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1307,2): error C2360: Initialisierung von "temp" durch "case"-Bezeichnung übersprungen
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1201): message : Siehe Deklaration von "temp"
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1308,2): error C2360: Initialisierung von "temp" durch "case"-Bezeichnung übersprungen
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1201): message : Siehe Deklaration von "temp"
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1318,2): error C2360: Initialisierung von "temp" durch "case"-Bezeichnung übersprungen
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1201): message : Siehe Deklaration von "temp"
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1321,2): error C2360: Initialisierung von "temp" durch "case"-Bezeichnung übersprungen
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1201): message : Siehe Deklaration von "temp"
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1322,2): error C2360: Initialisierung von "temp" durch "case"-Bezeichnung übersprungen
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1201): message : Siehe Deklaration von "temp"
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1329,2): error C2361: Initialisierung von "temp" durch "default"-Bezeichnung übersprungen
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1201): message : Siehe Deklaration von "temp"
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1480,42): warning C4554: ">>": Überprüfen Sie die Operatorrangfolge auf mögliche Fehler. Verwenden Sie Klammern, um die Rangfolge zu verdeutlichen.
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1486,42): warning C4554: ">>": Überprüfen Sie die Operatorrangfolge auf mögliche Fehler. Verwenden Sie Klammern, um die Rangfolge zu verdeutlichen.
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1517,2): error C2065: "adrOut": nichtdeklarierter Bezeichner
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1518,2): error C2065: "adrOut": nichtdeklarierter Bezeichner
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1519,2): error C2065: "adrOut": nichtdeklarierter Bezeichner
+D:\Git\8080-Emulator\src\core\Emulator8080.cpp(1521,9): error C2065: "adrOut": nichtdeklarierter Bezeichner

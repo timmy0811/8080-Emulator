@@ -379,6 +379,10 @@ const std::string e8080::Emulator8080::getAsssemblerLine(unsigned char opcode, s
 bool e8080::Emulator8080::executeInstruction(unsigned char opcode)
 {
 	int cycles = 0;
+	
+	uint16_t res, adr;
+	uint8_t psw;
+	bool lsb, msb;
 
 	switch (opcode) {
 		// Increment Decrement
@@ -406,9 +410,9 @@ bool e8080::Emulator8080::executeInstruction(unsigned char opcode)
 		shiftLeft(m_State.A, 1);
 		break;
 	case 0x09: cycles = 10;
-		uint16_t sum = add16(regTo16(m_State.H, m_State.L), regTo16(m_State.B, m_State.C));
-		m_State.H = getHigherNib(sum);
-		m_State.L = getHigherNib(sum);
+		res = add16(regTo16(m_State.H, m_State.L), regTo16(m_State.B, m_State.C));
+		m_State.H = getHigherNib(res);
+		m_State.L = getHigherNib(res);
 		break;
 	case 0x0a: cycles = 7;
 		m_State.A = m_State.mem[regTo16(m_State.B, m_State.C)];
@@ -448,15 +452,15 @@ bool e8080::Emulator8080::executeInstruction(unsigned char opcode)
 		m_State.D = m_RomBuffer[++m_State.PC];
 		break;
 	case 0x17: cycles = 4;							// TODO: Must be tested!!!
-		bool msb = (m_State.A & 0x80) != 0;
+		msb = (m_State.A & 0x80) != 0;
 		m_State.A <<= 1;
 		m_State.A |= m_State.flags.cy;
 		m_State.flags.cy = msb ? 1 : 0;
 		break;
 	case 0x19: cycles = 10;
-		uint16_t sum = add16(regTo16(m_State.H, m_State.L), regTo16(m_State.D, m_State.E));
-		m_State.H = getHigherNib(sum);
-		m_State.L = getHigherNib(sum);
+		res = add16(regTo16(m_State.H, m_State.L), regTo16(m_State.D, m_State.E));
+		m_State.H = getHigherNib(res);
+		m_State.L = getHigherNib(res);
 		break;
 	case 0x1a: cycles = 7;
 		m_State.A = m_State.mem[regTo16(m_State.D, m_State.E)];
@@ -474,7 +478,7 @@ bool e8080::Emulator8080::executeInstruction(unsigned char opcode)
 		m_State.E = m_RomBuffer[++m_State.PC];
 		break;
 	case 0x1f: cycles = 4;							// TODO: Must be tested!!!
-		bool lsb = (m_State.A & 0x01) != 0;
+		lsb = (m_State.A & 0x01) != 0;
 		m_State.A |= (m_State.flags.cy << 7);
 		m_State.flags.cy = lsb ? 1 : 0;
 		break;
@@ -484,7 +488,7 @@ bool e8080::Emulator8080::executeInstruction(unsigned char opcode)
 		m_State.H = m_RomBuffer[++m_State.PC];
 		break;
 	case 0x22: cycles = 16;
-		uint16_t adr = regTo16(m_RomBuffer[m_State.PC + 2], m_RomBuffer[m_State.PC + 1]);
+		adr = regTo16(m_RomBuffer[m_State.PC + 2], m_RomBuffer[m_State.PC + 1]);
 		m_State.PC += 2;
 		m_State.mem[adr] = m_State.L;
 		m_State.mem[adr + 1] = m_State.H;
@@ -503,12 +507,12 @@ bool e8080::Emulator8080::executeInstruction(unsigned char opcode)
 		break;
 	case 0x27: cycles = 4; break;
 	case 0x29: cycles = 10;
-		uint16_t sum = add16(regTo16(m_State.H, m_State.L), regTo16(m_State.H, m_State.L));
-		m_State.H = getHigherNib(sum);
-		m_State.L = getHigherNib(sum);
+		res = add16(regTo16(m_State.H, m_State.L), regTo16(m_State.H, m_State.L));
+		m_State.H = getHigherNib(res);
+		m_State.L = getHigherNib(res);
 		break;
 	case 0x2a: cycles = 16;
-		uint16_t adr = regTo16(m_RomBuffer[m_State.PC + 2], m_RomBuffer[m_State.PC + 1]);
+		adr = regTo16(m_RomBuffer[m_State.PC + 2], m_RomBuffer[m_State.PC + 1]);
 		m_State.PC += 2;
 		m_State.L = m_State.mem[adr];
 		m_State.H = m_State.mem[adr + 1];
@@ -534,7 +538,7 @@ bool e8080::Emulator8080::executeInstruction(unsigned char opcode)
 		m_State.PC += 2;
 		break;
 	case 0x32: cycles = 13;
-		uint16_t adr = regTo16(m_RomBuffer[m_State.PC + 2], m_RomBuffer[m_State.PC + 1]);
+		adr = regTo16(m_RomBuffer[m_State.PC + 2], m_RomBuffer[m_State.PC + 1]);
 		m_State.PC += 2;
 		m_State.mem[adr] = m_State.A;
 		break;
@@ -542,27 +546,27 @@ bool e8080::Emulator8080::executeInstruction(unsigned char opcode)
 		m_State.SP++;
 		break;
 	case 0x34: cycles = 10;
-		uint16_t adr = regTo16(m_State.H, m_State.L);
+		adr = regTo16(m_State.H, m_State.L);
 		m_State.mem[adr]++;
 		break;
 	case 0x35: cycles = 10;
-		uint16_t adr = regTo16(m_State.H, m_State.L);
+		adr = regTo16(m_State.H, m_State.L);
 		m_State.mem[adr]--;
 		break;
 	case 0x36: cycles = 10;
-		uint16_t adr = regTo16(m_State.H, m_State.L);
+		adr = regTo16(m_State.H, m_State.L);
 		m_State.mem[adr] = m_RomBuffer[++m_State.PC];
 		break;
 	case 0x37: cycles = 4;
 		m_State.flags.cy = 1;
 		break;
 	case 0x39: cycles = 10;
-		uint16_t sum = add16(regTo16(m_State.H, m_State.L), m_State.SP);
-		m_State.H = getHigherNib(sum);
-		m_State.L = getLowerNib(sum);
+		res = add16(regTo16(m_State.H, m_State.L), m_State.SP);
+		m_State.H = getHigherNib(res);
+		m_State.L = getLowerNib(res);
 		break;
 	case 0x3a: cycles = 13;
-		uint16_t adr = regTo16(m_RomBuffer[m_State.PC + 2], m_RomBuffer[m_State.PC + 1]);
+		adr = regTo16(m_RomBuffer[m_State.PC + 2], m_RomBuffer[m_State.PC + 1]);
 		m_State.PC += 2;
 		m_State.A = m_State.mem[adr];
 		break;
@@ -968,9 +972,7 @@ bool e8080::Emulator8080::executeInstruction(unsigned char opcode)
 
 	case 0xc0:
 		if (!m_State.flags.z) {
-			uint8_t highNib = popStack();
-			uint8_t lowNib = popStack();
-			m_State.PC = regTo16(highNib, lowNib);
+			ret();
 			cycles = 11;
 		}
 		cycles = 5;
@@ -983,78 +985,347 @@ bool e8080::Emulator8080::executeInstruction(unsigned char opcode)
 		if (!m_State.flags.z) {
 			m_State.PC = regTo16(m_RomBuffer[m_State.PC + 2], m_RomBuffer[m_State.PC + 1]);
 		}
+		else {
+			m_State.PC += 2;
+		}
 		break;
 	case 0xc3: cycles = 10;
 		m_State.PC = regTo16(m_RomBuffer[m_State.PC + 2], m_RomBuffer[m_State.PC + 1]);
 		break;
-	case 0xc4: cycles = 999;
+	case 0xc4:
 		if (!m_State.flags.z) {
-			uint8_t adrLo = m_RomBuffer[m_State.PC + 1];
-			uint8_t adrHi = m_RomBuffer[m_State.PC + 2];
-
-			pushStack(adrLo);
-			pushStack(adrHi);
-
-			m_State.PC = regTo16(adrHi, adrLo);
+			call();
+			cycles = 11;
 		}
+		cycles = 5;
+		m_State.PC += 2;
 		break;
 	case 0xc5: cycles = 11;
 		pushStack(m_State.C);
 		pushStack(m_State.B);
 		break;
-	case 0xc6: cycles = 7; break;
-	case 0xc7: cycles = 11; break;
-	case 0xc8: cycles = 999; break;
-	case 0xc9: cycles = 10; break;
-	case 0xca: cycles = 10; break;
-	case 0xcc: cycles = 999; break;
-	case 0xcd: cycles = 17; break;
-	case 0xce: cycles = 7; break;
-	case 0xcf: cycles = 11; break;
-	case 0xd0: cycles = 999; break;
-	case 0xd1: cycles = 10; break;
-	case 0xd2: cycles = 10; break;
-	case 0xd3: cycles = 10; break;
-	case 0xd4: cycles = 999; break;
-	case 0xd5: cycles = 11; break;
-	case 0xd6: cycles = 7; break;
-	case 0xd7: cycles = 11; break;
-	case 0xd8: cycles = 999; break;
-	case 0xda: cycles = 10; break;
-	case 0xdb: cycles = 10; break;
-	case 0xdc: cycles = 999; break;
-	case 0xde: cycles = 7; break;
-	case 0xdf: cycles = 11; break;
-	case 0xe0: cycles = 999; break;
-	case 0xe1: cycles = 10; break;
-	case 0xe2: cycles = 10; break;
-	case 0xe3: cycles = 18; break;
-	case 0xe4: cycles = 99; break;
-	case 0xe5: cycles = 11; break;
-	case 0xe6: cycles = 7; break;
-	case 0xe7: cycles = 11; break;
-	case 0xe8: cycles = 99; break;
-	case 0xe9: cycles = 5; break;
-	case 0xea: cycles = 10; break;
-	case 0xeb: cycles = 5; break;
-	case 0xec: cycles = 999; break;
-	case 0xee: cycles = 7; break;
-	case 0xef: cycles = 11; break;
-	case 0xf0: cycles = 999; break;
-	case 0xf1: cycles = 10; break;
-	case 0xf2: cycles = 10; break;
+	case 0xc6: cycles = 7; 
+		addToAcc(m_RomBuffer[++m_State.PC]);
+		break;
+	case 0xc7: cycles = 11; 
+		pushStack(getLowerNib(m_State.PC));
+		pushStack(getHigherNib(m_State.PC));
+
+		m_State.PC = 0x0000;
+		break;
+	case 0xc8:
+		if (m_State.flags.z) {
+			ret();
+			cycles = 11;
+		}
+		cycles = 5; break;
+	case 0xc9: cycles = 10; 
+		ret();
+		break;
+	case 0xca: cycles = 10; 
+		if (m_State.flags.z) {
+			m_State.PC = regTo16(m_RomBuffer[m_State.PC + 2], m_RomBuffer[m_State.PC + 1]);
+		}
+		else {
+			m_State.PC += 2;
+		}
+		break;
+	case 0xcc: 
+		if (m_State.flags.z) {
+			call();
+			cycles = 11;
+		}
+		else {
+			m_State.PC += 2;
+		}
+		cycles = 5;
+		break; 
+	case 0xcd: cycles = 17; 
+		call();
+		break;
+	case 0xce: cycles = 7; 
+		addToAccBF(m_RomBuffer[++m_State.PC], m_State.flags.cy); 
+		break;
+	case 0xcf: cycles = 11; 
+		pushStack(getLowerNib(m_State.PC));
+		pushStack(getHigherNib(m_State.PC));
+
+		m_State.PC = 0x0008; 
+		break;
+	case 0xd0: cycles = 999; 
+		if (!m_State.flags.cy) {
+			ret();
+			cycles = 11;
+		}
+		cycles = 5; 
+		break;
+	case 0xd1: cycles = 10; 
+		m_State.D = popStack();
+		m_State.E = popStack(); 
+		break;
+	case 0xd2: cycles = 10; 
+		if (!m_State.flags.cy) {
+			m_State.PC = regTo16(m_RomBuffer[m_State.PC + 2], m_RomBuffer[m_State.PC + 1]);
+		}
+		else {
+			m_State.PC += 2;
+		}
+		break;
+	case 0xd3: cycles = 10;	break;
+	case 0xd4: 
+		if (!m_State.flags.cy) {
+			call();
+			cycles = 11;
+		}
+		else {
+			cycles = 5;
+			m_State.PC += 2;
+		}
+		break;
+	case 0xd5: cycles = 11; 
+		pushStack(m_State.E);
+		pushStack(m_State.D); 
+		break;
+	case 0xd6: cycles = 7; 
+		subFromAcc(m_RomBuffer[++m_State.PC]);
+		break;
+	case 0xd7: cycles = 11; 
+		pushStack(getLowerNib(m_State.PC));
+		pushStack(getHigherNib(m_State.PC));
+
+		m_State.PC = 0x0010; 
+		break;
+	case 0xd8: 
+		if (m_State.flags.cy) {
+			ret();
+			cycles = 11;
+		}
+		cycles = 5;
+		break;
+	case 0xda: cycles = 10; 
+		if (m_State.flags.cy) {
+			m_State.PC = regTo16(m_RomBuffer[m_State.PC + 2], m_RomBuffer[m_State.PC + 1]);
+		}
+		else {
+			m_State.PC += 2;
+		}
+		break;
+	case 0xdb: cycles = 10;	break;
+	case 0xdc:
+		if (m_State.flags.cy) {
+			call();
+			cycles = 11;
+		}
+		else {
+			cycles = 5;
+			m_State.PC += 2;
+		}
+		break;
+	case 0xde: cycles = 7; 
+		subFromAccBF(m_RomBuffer[++m_State.PC], m_State.flags.cy);
+		break;
+	case 0xdf: cycles = 11; 
+		pushStack(getLowerNib(m_State.PC));
+		pushStack(getHigherNib(m_State.PC));
+
+		m_State.PC = 0x0018; 
+		break;
+	case 0xe0: 
+		if(!m_State.flags.p) {
+			ret();
+			cycles = 11;
+		}
+		else {
+			cycles = 5;
+		}
+		break;
+	case 0xe1: cycles = 10; 
+		m_State.H = popStack();
+		m_State.L = popStack(); 
+		break;
+	case 0xe2: cycles = 10; 
+		if (m_State.flags.p) {
+			m_State.PC = regTo16(m_RomBuffer[m_State.PC + 2], m_RomBuffer[m_State.PC + 1]);
+		}
+		else {
+			m_State.PC += 2;
+		}
+		break;
+	case 0xe3: cycles = 18; 
+		m_State.mem[m_State.SP] = m_State.H;			// ???
+		m_State.mem[m_State.SP - 1] = m_State.L;
+		break;
+	case 0xe4:
+		if (!m_State.flags.p) {
+			call();
+			cycles = 11;
+		}
+		else {
+			cycles = 5;
+			m_State.PC += 2;
+		}
+		break;
+	case 0xe5: cycles = 11; 
+		pushStack(m_State.L);
+		pushStack(m_State.H); 
+		break;
+	case 0xe6: cycles = 7; 
+		bitAndAcc(m_RomBuffer[++m_State.PC]);
+		break;
+	case 0xe7: cycles = 11; 
+		pushStack(getLowerNib(m_State.PC));
+		pushStack(getHigherNib(m_State.PC));
+
+		m_State.PC = 0x0020; 
+		break;
+	case 0xe8: 
+		if (m_State.flags.p) {
+			ret();
+			cycles = 11;
+		}
+		else {
+			cycles = 5;
+		}
+		break;
+	case 0xe9: cycles = 5; 
+		m_State.PC = regTo16(m_State.H, m_State.L);
+		break;
+	case 0xea: cycles = 10; 
+		if (m_State.flags.p) {
+			m_State.PC = regTo16(m_RomBuffer[m_State.PC + 2], m_RomBuffer[m_State.PC + 1]);
+		}
+		else {
+			m_State.PC += 2;
+		}
+		break;
+	case 0xeb: cycles = 5; 
+		uint8_t temp = m_State.H;
+		m_State.H = m_State.D;
+		m_State.D = temp;
+
+		temp = m_State.L;
+		m_State.L = m_State.E;
+		m_State.E = temp;
+		break;
+	case 0xec: 
+		if (m_State.flags.p) {
+			call();
+			cycles = 11;
+		}
+		else {
+			cycles = 5;
+			m_State.PC += 2;
+		}
+		break;
+	case 0xee: cycles = 7; 
+		bitXorAcc(m_RomBuffer[++m_State.PC]);
+		break;
+	case 0xef: cycles = 11; 
+		pushStack(getLowerNib(m_State.PC));
+		pushStack(getHigherNib(m_State.PC));
+
+		m_State.PC = 0x0028; 
+		break;
+	case 0xf0: 
+		if (!m_State.flags.s) {
+			ret();
+			cycles = 11;
+		}
+		else {
+			cycles = 5;
+		}
+		break;
+	case 0xf1: cycles = 10; 
+		psw = popStack();
+
+		m_State.flags.cy = (psw& (1 << 0)) != 0 ? 1 : 0;
+		m_State.flags.p = (psw & (1 << 2)) != 0 ? 1 : 0;
+		m_State.flags.ac = (psw & (1 << 4)) != 0 ? 1 : 0;
+		m_State.flags.z = (psw & (1 << 6)) != 0 ? 1 : 0;
+		m_State.flags.s = (psw & (1 << 7)) != 0 ? 1 : 0;
+
+		m_State.A = popStack();
+		break;
+	case 0xf2: cycles = 10; 
+		if (m_State.flags.p) {
+			m_State.PC = regTo16(m_RomBuffer[m_State.PC + 2], m_RomBuffer[m_State.PC + 1]);
+		}
+		else {
+			m_State.PC += 2;
+		}
+		break;
 	case 0xf3: cycles = 4; break;
-	case 0xf4: cycles = 999; break;
-	case 0xf5: cycles = 11; break;
-	case 0xf6: cycles = 7; break;
-	case 0xf7: cycles = 11; break;
-	case 0xf8: cycles = 999; break;
-	case 0xf9: cycles = 5; break;
-	case 0xfa: cycles = 10; break;
+	case 0xf4:
+		if (!m_State.flags.s) {		// Different documentations
+			m_State.PC = regTo16(m_RomBuffer[m_State.PC + 2], m_RomBuffer[m_State.PC + 1]);
+			cycles = 17;
+		}
+		else {
+			cycles = 11;
+			m_State.PC += 2;
+		}
+		break;
+	case 0xf5: cycles = 11; 
+		pushStack(m_State.A);
+		psw = 0x00;
+		psw &= m_State.flags.cy == 1 ? 0b0000001 : 0b00000000;
+		psw &= m_State.flags.p == 1 ? 0b0000100 : 0b00000000;
+		psw &= m_State.flags.ac == 1 ? 0b0010000 : 0b00000000;
+		psw &= m_State.flags.z == 1 ? 0b01000000 : 0b00000000;
+		psw &= m_State.flags.s == 1 ? 0b1000000 : 0b00000000;
+
+		pushStack(psw);
+		break;
+	case 0xf6: cycles = 7; 
+		bitOrAcc(m_RomBuffer[++m_State.PC]);
+		break;
+	case 0xf7: cycles = 11; 
+		pushStack(getLowerNib(m_State.PC));
+		pushStack(getHigherNib(m_State.PC));
+
+		m_State.PC = 0x0030; 
+		break;
+	case 0xf8:
+		if (m_State.flags.s) {
+			ret();
+			cycles = 11;
+		}
+		else {
+			cycles = 5;
+		}
+		break;
+	case 0xf9: cycles = 5; 
+		m_State.SP = regTo16(m_State.H, m_State.L);
+		break;
+	case 0xfa: cycles = 10; 
+		if (m_State.flags.s) {
+			m_State.PC = regTo16(m_RomBuffer[m_State.PC + 2], m_RomBuffer[m_State.PC + 1]);
+		}
+		else {
+			m_State.PC += 2;
+		}
+		break;
 	case 0xfb: cycles = 4; break;
-	case 0xfc: cycles = 17; break;
+	case 0xfc: cycles = 17; 
+		if (m_State.flags.s) {
+			call();
+			cycles = 11;
+		}
+		else {
+			cycles = 5;
+			m_State.PC += 2;
+		}
+		break;
+	case 0xfd: cycles = 17; 
+		subFromAcc(m_RomBuffer[m_State.PC], 0, true);
+		break;
 	case 0xfe: cycles = 7; break;
-	case 0xff: cycles = 11; break;
+	case 0xff: cycles = 11; 
+		pushStack(getLowerNib(m_State.PC));
+		pushStack(getHigherNib(m_State.PC));
+
+		m_State.PC = 0x0038; 
+		break;
 
 	default: break;
 	}
@@ -1112,7 +1383,25 @@ inline uint8_t e8080::Emulator8080::popStack()
 inline void e8080::Emulator8080::pushStack(uint8_t val)
 {
 	m_State.SP++;
-	m_State.mem[m_State.SP] = 0x00;
+	m_State.mem[m_State.SP] = val;
+}
+
+void e8080::Emulator8080::call()
+{
+	uint8_t adrLo = m_RomBuffer[m_State.PC + 1];
+	uint8_t adrHi = m_RomBuffer[m_State.PC + 2];
+
+	pushStack(adrLo);
+	pushStack(adrHi);
+
+	m_State.PC = regTo16(adrHi, adrLo);
+}
+
+void e8080::Emulator8080::ret()
+{
+	uint8_t highNib = popStack();
+	uint8_t lowNib = popStack();
+	m_State.PC = regTo16(highNib, lowNib);
 }
 
 void e8080::Emulator8080::addToAcc(uint8_t valA, uint8_t valB)
@@ -1226,7 +1515,7 @@ inline bool e8080::Emulator8080::checkParity(uint8_t val) const
 
 inline uint16_t e8080::Emulator8080::regTo16(uint8_t Reg0, uint8_t Reg1) const
 {
-	uint16_t adrOut = Reg0;
+	adrOut = Reg0;
 	adrOut <<= 8;
 	adrOut += Reg1;
 
