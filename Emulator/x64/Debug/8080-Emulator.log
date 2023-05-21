@@ -1,0 +1,4 @@
+﻿  main.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.22000.0\shared\minwindef.h(130,1): warning C4005: "APIENTRY": Makro-Neudefinition
+C:\Git\8080-Emulator\Dependencies\glfw\include\GLFW\glfw3.h(123,1): message : Siehe vorherige Definition von "APIENTRY"
+  8080-Emulator.vcxproj -> C:\Git\8080-Emulator\x64\Debug\8080-Emulator.exe
