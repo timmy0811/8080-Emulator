@@ -20,14 +20,14 @@ inline void LOGC(const std::string& msg, LOG_COLOR color = LOG_COLOR::LOG) {
 }
 
 namespace Configuration::Global {
-	// ...
+	inline glm::ivec2 windowSize;
 }
 
 class Config {
 private:
 	const std::string m_Path;
 public:
-	Config(const std::string& path) 
+	Config(const std::string& path)
 		:m_Path(path)
 	{
 		Parse();
@@ -37,13 +37,15 @@ public:
 		LOGC("Parsing Config", LOG_COLOR::SPECIAL_A);
 		YAML::Node mainNode = YAML::LoadFile(m_Path);
 
-		WIN_WIDTH = mainNode["config"]["window"]["Width"].as<unsigned int>();
-		WIN_HEIGHT = mainNode["config"]["window"]["Height"].as<unsigned int>();
+		WIN_WIDTH_DEFAULT = mainNode["config"]["window"]["Width"].as<unsigned int>();
+		WIN_HEIGHT_DEFAULT = mainNode["config"]["window"]["Height"].as<unsigned int>();
+
+		Configuration::Global::windowSize = { WIN_WIDTH_DEFAULT, WIN_HEIGHT_DEFAULT };
 	}
-	
+
 	// Window
-	unsigned int WIN_WIDTH = 0;
-	unsigned int WIN_HEIGHT = 0;
+	unsigned int WIN_WIDTH_DEFAULT = 0;
+	unsigned int WIN_HEIGHT_DEFAULT = 0;
 };
 
 extern Config conf;

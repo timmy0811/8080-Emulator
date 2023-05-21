@@ -176,6 +176,7 @@
     <ClInclude Include="src\vendor\imgui\imstb_textedit.h" />
     <ClInclude Include="src\vendor\imgui\imstb_truetype.h" />
     <ClInclude Include="src\vendor\imgui_helper\imgui.h" />
+    <ClInclude Include="src\window.h" />
     <ClInclude Include="src\windowsWrapper.h" />
   </ItemGroup>
   <ItemGroup>

@@ -9,6 +9,7 @@ e8080::Emulator8080::Emulator8080()
 e8080::Emulator8080::~Emulator8080()
 {
 	delete[] m_RomBuffer;
+	delete[] m_RomDisassembledArr;
 }
 
 bool e8080::Emulator8080::disassemble()
@@ -27,7 +28,8 @@ bool e8080::Emulator8080::disassemble()
 		romPtr++;
 	}
 
-	return false;
+	m_SystemFlags |= 1; // Set flag for reloading codeBuffer
+	return true;
 }
 
 bool e8080::Emulator8080::loadRomFromFile(const std::string& path)
@@ -85,6 +87,54 @@ void e8080::Emulator8080::executeProgram(float clockMHz)
 		const unsigned char byte = *(m_RomBuffer + m_State.PC);
 		executeInstruction(byte);
 	}
+}
+
+void e8080::Emulator8080::OnUpdate()
+{
+}
+
+void e8080::Emulator8080::OnGuiRender()
+{
+	ImGui::SetNextWindowPos({ 10, 10 });
+	ImGui::SetNextWindowSize({ gl::windowSize.x / 3.f, gl::windowSize.y - 20.f });
+
+	ImGui::Begin("Program Code");
+	ImGui::Columns(2, nullptr, false);
+	ImGui::SetColumnWidth(0, (gl::windowSize.x / 3.f - 20) / 2.f);
+	ImGui::SetColumnWidth(1, (gl::windowSize.x / 3.f - 20) / 2.f);
+
+	int pcTemp = (int)m_State.PC;
+	ImGui::InputInt("PC", &pcTemp, 1);
+	m_State.PC = (uint16_t)pcTemp;
+	ImGui::NextColumn();
+
+	static std::string abc;
+	ImGui::Text(fmt::format("Instruction: {}", abc).c_str());
+	ImGui::NextColumn();
+
+	ImGui::Text(fmt::format("Par1: {} [{}]", "0xFF", "255").c_str());
+	ImGui::NextColumn();
+
+	ImGui::Text(fmt::format("Par2: {} [{}]", "0xFF", "255").c_str());
+
+	ImGui::Columns(1);  // Reset columns
+
+	ImGui::Separator();
+
+	if (m_RomDisassembled.size() > 0 && m_SystemFlags & 1) {
+		delete[] m_RomDisassembledArr;
+		m_RomDisassembledArr = new char[m_RomDisassembled.size() + 1];
+
+		std::copy(m_RomDisassembled.begin(), m_RomDisassembled.end(), m_RomDisassembledArr);
+		m_RomDisassembledArr[m_RomDisassembled.size() + 1] = '\0'; // Add null terminator
+
+		m_SystemFlags &= 0;
+	}
+
+	if (m_RomDisassembledArr) ImGui::InputTextMultiline(" ", m_RomDisassembledArr, m_RomDisassembled.size() + 1, ImVec2(gl::windowSize.x - 20.f, 0.f), ImGuiInputTextFlags_ReadOnly);
+	else ImGui::Text("Load rom file first!");
+
+	ImGui::End();
 }
 
 const std::string e8080::Emulator8080::getAsssemblerLine(unsigned char opcode, size_t& ptr)

@@ -4,6 +4,8 @@
 #include "imgui/imgui_impl_opengl3.h"
 #include "imgui/imgui_impl_glfw.h"
 
+#include <GLFW/glfw3.h>
+
 ImGuiIO& ImGuiInit() {
 	ImGui::CreateContext();
 

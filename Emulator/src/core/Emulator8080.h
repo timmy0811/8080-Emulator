@@ -8,8 +8,12 @@
 #include <fstream>
 #include <sstream>
 
+#include "imgui/imgui.h"
+
 #include "config.h"
 #include "Structures.h"
+
+#define gl Configuration::Global
 
 namespace e8080 {
 	class Emulator8080
@@ -23,6 +27,9 @@ namespace e8080 {
 		bool saveDisassembledToFile(const std::string& path);
 		void executeProgram(float clockMHz = 2.f);
 
+		void OnUpdate();
+		void OnGuiRender();
+
 	private:
 		// System 8080
 		float m_ClockMHz;
@@ -33,6 +40,10 @@ namespace e8080 {
 		size_t m_RomBufferSize;
 		std::string m_RomPath;
 		std::string m_RomDisassembled;
+
+		char* m_RomDisassembledArr;
+
+		uint16_t m_SystemFlags; // ..., CodeBuffRel
 
 	private:
 		const std::string getAsssemblerLine(unsigned char opcode, size_t& ptr);

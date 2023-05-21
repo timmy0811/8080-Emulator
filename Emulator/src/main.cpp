@@ -3,6 +3,7 @@
 #include "imgui_helper/imgui.h"
 
 #include "config.h"
+#include "window.h"
 
 #include "core/Emulator8080.h"
 
@@ -20,7 +21,7 @@ int main(int argc, char* argv[]) {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	window = glfwCreateWindow(conf.WIN_WIDTH, conf.WIN_HEIGHT, "8080-Emulator Education-Ver.", NULL, NULL);
+	window = glfwCreateWindow(conf.WIN_WIDTH_DEFAULT, conf.WIN_HEIGHT_DEFAULT, "8080-Emulator Education-Ver.", NULL, NULL);
 	if (!window)
 	{
 		glfwTerminate();
@@ -52,16 +53,17 @@ int main(int argc, char* argv[]) {
 	MicrProc8080.loadRomFromFile("rom_samples/si.a26");
 
 	MicrProc8080.disassemble();
-	MicrProc8080.saveDisassembledToFile("asm_out/assembler.asm");
+	//MicrProc8080.saveDisassembledToFile("asm_out/assembler.asm");
 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
 	{
 		ImGuiNewFrame();
+		pollResizeEvent(window);
 
 		// Render in here
-		ImGui::Begin("Test");
-		ImGui::End();
+		MicrProc8080.OnUpdate();
+		MicrProc8080.OnGuiRender();
 
 		ImGuiRender(io);
 
