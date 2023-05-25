@@ -109,7 +109,8 @@ void e8080::Emulator8080::OnUpdate()
 
 void e8080::Emulator8080::OnGuiRender()
 {
-	bool init = Configuration::Global::updateResize;
+	static bool init = true;
+	if (!init) init = Configuration::Global::updateResize;
 
 	// Code Window
 	if (init) {
@@ -194,7 +195,7 @@ void e8080::Emulator8080::OnGuiRender()
 
 	ImGui::Separator();
 
-	if (ImGui::Button("Run", { (gl::windowSize.x / 3.f - 20) / 3.f - 5.f, 30.f})) {
+	if (ImGui::Button("Run", { (gl::windowSize.x / 3.f - 20) / 3.f - 5.f, 30.f })) {
 		m_InExecution = true;
 	}
 	ImGui::NextColumn();
@@ -217,31 +218,53 @@ void e8080::Emulator8080::OnGuiRender()
 	// Ram View
 	if (init) {
 		ImGui::SetNextWindowPos({ gl::windowSize.x / 3.f * 2 + 20.f, 10 });
-		ImGui::SetNextWindowSize({ gl::windowSize.x / 3.f - 20.f , gl::windowSize.y - 20.f });
+		ImGui::SetNextWindowSize({ gl::windowSize.x / 3.f - 30.f , gl::windowSize.y - 20.f });
 	}
 
-	ImGui::Begin("Ram View");
-
+	ImGui::Begin("Ram View"); //, nullptr, ImGuiWindowFlags_HorizontalScrollbar);
 	ImVec2 size = ImGui::GetWindowSize();
+	//ImGui::BeginChild("Scrollable Content", ImVec2(0, 0), true, ImGuiWindowFlags_AlwaysHorizontalScrollbar);
 
-	static bool selected[3 * 3] = { true, false, true, false, true, false, true, false, true };
+	ImGui::Columns(2, nullptr, false);
+	ImGui::SetColumnWidth(0, size.x / 2.f);
+	ImGui::SetColumnWidth(1, size.x / 2.f);
+
+	static int valPerRow = 16;
+	ImGui::SetNextItemWidth(100.f);
+	ImGui::InputInt("Values Per Row", &valPerRow, 1, 2);
+	ImGui::NextColumn();
+
+	static int dispRows = 50;
+	ImGui::SetNextItemWidth(100.f);
+	ImGui::InputInt("Rows", &dispRows, 1, 8);
+	ImGui::Columns(1);
+
+	static char adr[] = "0000";
+	ImGui::SetNextItemWidth(200.f);
+	ImGui::InputText("Adress (hex)", adr, 5);
+	ImGui::SameLine();
+	if (ImGui::Button("Search")) {
+		// Refresh Ram view
+	}
+
+	ImGui::Separator();
+
+	static bool selected;
 	constexpr float cellWidth = 20.f;
-	const int viewCellsX = (size.x - 20.f) / cellWidth;
-	for (int y = 0; y < 3; y++)
+	for (int y = 0; y < dispRows; y++)
 	{
-		for (int x = 0; x < 3; x++)
+		for (int x = 0; x < valPerRow; x++)
 		{
-			ImVec2 alignment = ImVec2((float)x / 2.0f, (float)y / 2.0f);
-			char name[32];
-			sprintf(name, "(%.1f,%.1f)", alignment.x, alignment.y);
+			ImVec2 alignment = ImVec2((float)x / 3.f, (float)y / 1.0f);
 			if (x > 0) ImGui::SameLine();
-			ImGui::PushStyleVar(ImGuiStyleVar_SelectableTextAlign, alignment);
-			ImGui::Selectable(name, &selected[3 * y + x], ImGuiSelectableFlags_None, ImVec2(80, 80));
-			ImGui::PopStyleVar();
+			ImGui::Selectable("FF", &selected, ImGuiSelectableFlags_None, ImVec2(cellWidth, 15));
 		}
 	}
+	//ImGui::EndChild();
 
 	ImGui::End();
+
+	init = false;
 }
 
 const std::string e8080::Emulator8080::getAsssemblerLine(unsigned char opcode, size_t& ptr)

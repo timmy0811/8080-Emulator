@@ -44,6 +44,7 @@ int main(int argc, char* argv[]) {
 
 	// ImGui
 	ImGuiIO& io = ImGuiInit();
+	io.IniFilename = NULL;
 
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	ImGui_ImplOpenGL3_Init();

@@ -1,1 +1,6 @@
 *.opendb
+*.ipch
+*.db
+*.db-shm
+*.db-val
+*.suo
