@@ -26,6 +26,8 @@ namespace e8080 {
 		bool loadRomFromFile(const std::string& path);
 		bool saveDisassembledToFile(const std::string& path);
 		void executeProgram(float clockMHz = 2.f);
+		void executeCurrentInstruction();
+		void continueProgram();
 
 		void OnUpdate();
 		void OnGuiRender();
@@ -44,6 +46,9 @@ namespace e8080 {
 		char* m_RomDisassembledArr;
 
 		uint16_t m_SystemFlags; // ..., CodeBuffRel
+
+		// State
+		bool m_InExecution;
 
 	private:
 		const std::string getAsssemblerLine(unsigned char opcode, size_t& ptr);

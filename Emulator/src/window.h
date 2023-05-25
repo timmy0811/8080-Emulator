@@ -7,9 +7,11 @@
 void OnWindowResize() {
 	// Notify observers ...
 	LOGC("Resized", LOG_COLOR::LOG);
+	Configuration::Global::updateResize = true;
 }
 
 bool pollResizeEvent(GLFWwindow* window) {
+	Configuration::Global::updateResize = false;
 	int x, y;
 	glfwGetWindowSize(window, &x, &y);
 

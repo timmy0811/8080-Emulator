@@ -21,6 +21,7 @@ inline void LOGC(const std::string& msg, LOG_COLOR color = LOG_COLOR::LOG) {
 
 namespace Configuration::Global {
 	inline glm::ivec2 windowSize;
+	inline bool updateResize;
 }
 
 class Config {

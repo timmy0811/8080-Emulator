@@ -89,14 +89,33 @@ void e8080::Emulator8080::executeProgram(float clockMHz)
 	}
 }
 
+void e8080::Emulator8080::executeCurrentInstruction()
+{
+	const unsigned char byte = *(m_RomBuffer + m_State.PC);
+	executeInstruction(byte);
+}
+
+void e8080::Emulator8080::continueProgram()
+{
+	while (m_State.PC < m_RomBufferSize) {
+		const unsigned char byte = *(m_RomBuffer + m_State.PC);
+		executeInstruction(byte);
+	}
+}
+
 void e8080::Emulator8080::OnUpdate()
 {
 }
 
 void e8080::Emulator8080::OnGuiRender()
 {
-	ImGui::SetNextWindowPos({ 10, 10 });
-	ImGui::SetNextWindowSize({ gl::windowSize.x / 3.f, gl::windowSize.y - 20.f });
+	bool init = Configuration::Global::updateResize;
+
+	// Code Window
+	if (init) {
+		ImGui::SetNextWindowPos({ 10, 10 });
+		ImGui::SetNextWindowSize({ gl::windowSize.x / 3.f, gl::windowSize.y - 20.f });
+	}
 
 	ImGui::Begin("Program Code");
 	ImGui::Columns(2, nullptr, false);
@@ -123,16 +142,104 @@ void e8080::Emulator8080::OnGuiRender()
 
 	if (m_RomDisassembled.size() > 0 && m_SystemFlags & 1) {
 		delete[] m_RomDisassembledArr;
-		m_RomDisassembledArr = new char[m_RomDisassembled.size() + 1];
+		size_t size = m_RomDisassembled.size() + 1;
+		m_RomDisassembledArr = new char[size];
 
 		std::copy(m_RomDisassembled.begin(), m_RomDisassembled.end(), m_RomDisassembledArr);
-		m_RomDisassembledArr[m_RomDisassembled.size() + 1] = '\0'; // Add null terminator
+		m_RomDisassembledArr[size - 1] = '\0';
 
 		m_SystemFlags &= 0;
 	}
 
-	if (m_RomDisassembledArr) ImGui::InputTextMultiline(" ", m_RomDisassembledArr, m_RomDisassembled.size() + 1, ImVec2(gl::windowSize.x - 20.f, 0.f), ImGuiInputTextFlags_ReadOnly);
+	const ImVec2 windowSize = ImGui::GetWindowSize();
+	const ImVec2 windowPos = ImGui::GetWindowPos();
+
+	// Calculate available vertical space remaining in the window
+	const float availableHeight = gl::windowSize.y - 20.f - ImGui::GetCursorPos().y - 10.f;
+
+	if (m_RomDisassembledArr) ImGui::InputTextMultiline(" ", m_RomDisassembledArr, m_RomDisassembled.size() + 1, ImVec2(gl::windowSize.x - 20.f, availableHeight), ImGuiInputTextFlags_ReadOnly);
 	else ImGui::Text("Load rom file first!");
+
+	ImGui::End();
+
+	// Controll Window
+	if (init) {
+		ImGui::SetNextWindowPos({ gl::windowSize.x / 3.f + 20.f, 10 });
+		ImGui::SetNextWindowSize({ gl::windowSize.x / 3.f - 10.f, gl::windowSize.y / 4.f });
+	}
+
+	ImGui::Begin("Emulator Controll");
+	ImGui::Columns(3, nullptr, false);
+	ImGui::SetColumnWidth(0, (gl::windowSize.x / 3.f - 20) / 3.f);
+	ImGui::SetColumnWidth(1, (gl::windowSize.x / 3.f - 20) / 3.f);
+	ImGui::SetColumnWidth(2, (gl::windowSize.x / 3.f - 20) / 3.f);
+
+	if (ImGui::Button("Step", { (gl::windowSize.x / 3.f - 20) / 3.f - 5.f, 30.f })) {
+		m_InExecution = false;
+		executeCurrentInstruction();
+	}
+	ImGui::NextColumn();
+
+	if (ImGui::Button("Step Over", { (gl::windowSize.x / 3.f - 20) / 3.f - 5.f, 30.f })) {
+		m_InExecution = false;
+		int instructionWidth = 1; // ToDo: Get Instruction width ???
+		m_State.PC += instructionWidth;
+	}
+	ImGui::NextColumn();
+
+	if (ImGui::Button("Halt", { (gl::windowSize.x / 3.f - 20) / 3.f - 5.f, 30.f })) {
+		m_InExecution = false;
+	}
+	ImGui::NextColumn();
+
+	ImGui::Separator();
+
+	if (ImGui::Button("Run", { (gl::windowSize.x / 3.f - 20) / 3.f - 5.f, 30.f})) {
+		m_InExecution = true;
+	}
+	ImGui::NextColumn();
+
+	if (ImGui::Button("Reset PC", { (gl::windowSize.x / 3.f - 20) / 3.f - 5.f, 30.f })) {
+		m_InExecution = false;
+		m_State.PC = 0;
+	}
+	ImGui::NextColumn();
+
+	if (ImGui::Button("Reset", { (gl::windowSize.x / 3.f - 20) / 3.f - 5.f, 30.f })) {
+		m_InExecution = false;
+		m_State.PC = 0;
+		// ToDo: Reset Ram, ...
+	}
+	ImGui::Columns(1);  // Reset columns
+
+	ImGui::End();
+
+	// Ram View
+	if (init) {
+		ImGui::SetNextWindowPos({ gl::windowSize.x / 3.f * 2 + 20.f, 10 });
+		ImGui::SetNextWindowSize({ gl::windowSize.x / 3.f - 20.f , gl::windowSize.y - 20.f });
+	}
+
+	ImGui::Begin("Ram View");
+
+	ImVec2 size = ImGui::GetWindowSize();
+
+	static bool selected[3 * 3] = { true, false, true, false, true, false, true, false, true };
+	constexpr float cellWidth = 20.f;
+	const int viewCellsX = (size.x - 20.f) / cellWidth;
+	for (int y = 0; y < 3; y++)
+	{
+		for (int x = 0; x < 3; x++)
+		{
+			ImVec2 alignment = ImVec2((float)x / 2.0f, (float)y / 2.0f);
+			char name[32];
+			sprintf(name, "(%.1f,%.1f)", alignment.x, alignment.y);
+			if (x > 0) ImGui::SameLine();
+			ImGui::PushStyleVar(ImGuiStyleVar_SelectableTextAlign, alignment);
+			ImGui::Selectable(name, &selected[3 * y + x], ImGuiSelectableFlags_None, ImVec2(80, 80));
+			ImGui::PopStyleVar();
+		}
+	}
 
 	ImGui::End();
 }
