@@ -166,7 +166,7 @@ void e8080::Emulator8080::OnGuiRender()
 	// Controll Window
 	if (init) {
 		ImGui::SetNextWindowPos({ gl::windowSize.x / 3.f + 20.f, 10 });
-		ImGui::SetNextWindowSize({ gl::windowSize.x / 3.f - 10.f, gl::windowSize.y / 4.f });
+		ImGui::SetNextWindowSize({ gl::windowSize.x / 3.f - 10.f, gl::windowSize.y / 6.f });
 	}
 
 	ImGui::Begin("Emulator Controll");
@@ -239,25 +239,42 @@ void e8080::Emulator8080::OnGuiRender()
 	ImGui::InputInt("Rows", &dispRows, 1, 8);
 	ImGui::Columns(1);
 
-	static char adr[] = "0000";
-	ImGui::SetNextItemWidth(200.f);
-	ImGui::InputText("Adress (hex)", adr, 5);
-	ImGui::SameLine();
+	static uint16_t adr = 0x0000;
+	static uint16_t adrUpdated = 0x0000;
+	char buffer[5];
+	std::snprintf(buffer, sizeof(buffer), "%X", adr);
+	if (ImGui::InputText("Adress", buffer, sizeof(buffer), ImGuiInputTextFlags_CharsHexadecimal | ImGuiInputTextFlags_CharsUppercase))
+	{
+		adr = std::strtol(buffer, nullptr, 16);
+	}
 	if (ImGui::Button("Search")) {
 		// Refresh Ram view
+		adrUpdated = adr;
 	}
 
 	ImGui::Separator();
 
 	static bool selected;
 	constexpr float cellWidth = 20.f;
-	for (int y = 0; y < dispRows; y++)
+	for (int y = -1; y < dispRows; y++)
 	{
-		for (int x = 0; x < valPerRow; x++)
+		for (int x = 0; x < valPerRow + 1; x++)
 		{
-			ImVec2 alignment = ImVec2((float)x / 3.f, (float)y / 1.0f);
+			float thisCellWidth = x == 0 ? 50.f : cellWidth;
+			std::string label = "??";
+			if (y == -1) {
+				if (x == 0) label = " ";
+				else label = "+" + std::to_string(x + 1);
+			}
+			else if (x == 0) { // adrUpdated
+				label = "0x" + int16Tohex((adr + (y) * valPerRow));
+			}
+			else {
+				// Write Values here
+			}
+
 			if (x > 0) ImGui::SameLine();
-			ImGui::Selectable("FF", &selected, ImGuiSelectableFlags_None, ImVec2(cellWidth, 15));
+			ImGui::Selectable(label.c_str(), & selected, ImGuiSelectableFlags_None, ImVec2(thisCellWidth, 15));
 		}
 	}
 	//ImGui::EndChild();

@@ -1,2 +1,4 @@
 ﻿  Emulator8080.cpp
-  8080-Emulator.vcxproj -> C:\Git\8080-Emulator\x64\Debug\8080-Emulator.exe
+D:\Git\8080-Emulator\Emulator\src\core\Emulator8080.cpp(248,20): warning C4244: "=": Konvertierung von "long" in "uint16_t", möglicher Datenverlust
+LINK : warning LNK4098: Standardbibliothek "MSVCRT" steht in Konflikt mit anderen Bibliotheken; /NODEFAULTLIB:Bibliothek verwenden.
+  8080-Emulator.vcxproj -> D:\Git\8080-Emulator\x64\Debug\8080-Emulator.exe
