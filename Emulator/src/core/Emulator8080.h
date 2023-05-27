@@ -45,6 +45,12 @@ namespace e8080 {
 
 		char* m_RomDisassembledArr;
 
+		uint8_t* m_RamBufferUpdated;
+		uint8_t* m_RamBuffer;
+		size_t m_RamBufferUpdatedSize;
+		size_t m_RamBufferSize;
+		bool m_isRamBufferFilled;
+
 		uint16_t m_SystemFlags; // ..., CodeBuffRel
 
 		// State
@@ -83,7 +89,9 @@ namespace e8080 {
 		inline uint8_t getLowerNib(uint8_t val) const;
 		inline uint8_t getHigherNib(uint8_t val) const;
 
+		void updateRamBuffers(size_t adr, unsigned int rows, unsigned int columns);
 		inline const std::string chToHex(char character) const;
+		inline const std::string int8ToHex(uint8_t character) const;
 		inline const std::string int16Tohex(unsigned short value) const;
 
 		inline unsigned char bufferB(size_t adr) const { return *(m_RomBuffer + adr); }

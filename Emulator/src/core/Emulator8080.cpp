@@ -9,6 +9,8 @@ e8080::Emulator8080::Emulator8080()
 e8080::Emulator8080::~Emulator8080()
 {
 	delete[] m_RomBuffer;
+	delete[] m_RamBuffer;
+	delete[] m_RamBufferUpdated;
 	delete[] m_RomDisassembledArr;
 }
 
@@ -109,11 +111,12 @@ void e8080::Emulator8080::OnUpdate()
 
 void e8080::Emulator8080::OnGuiRender()
 {
+	static bool reinit = true;
 	static bool init = true;
-	if (!init) init = Configuration::Global::updateResize;
+	if (!reinit) reinit = Configuration::Global::updateResize;
 
 	// Code Window
-	if (init) {
+	if (reinit) {
 		ImGui::SetNextWindowPos({ 10, 10 });
 		ImGui::SetNextWindowSize({ gl::windowSize.x / 3.f, gl::windowSize.y - 20.f });
 	}
@@ -164,7 +167,7 @@ void e8080::Emulator8080::OnGuiRender()
 	ImGui::End();
 
 	// Controll Window
-	if (init) {
+	if (reinit) {
 		ImGui::SetNextWindowPos({ gl::windowSize.x / 3.f + 20.f, 10 });
 		ImGui::SetNextWindowSize({ gl::windowSize.x / 3.f - 10.f, gl::windowSize.y / 6.f });
 	}
@@ -216,71 +219,110 @@ void e8080::Emulator8080::OnGuiRender()
 	ImGui::End();
 
 	// Ram View
-	if (init) {
+	if (reinit) {
 		ImGui::SetNextWindowPos({ gl::windowSize.x / 3.f * 2 + 20.f, 10 });
 		ImGui::SetNextWindowSize({ gl::windowSize.x / 3.f - 30.f , gl::windowSize.y - 20.f });
 	}
 
-	ImGui::Begin("Ram View"); //, nullptr, ImGuiWindowFlags_HorizontalScrollbar);
+	ImGui::Begin("Ram View");
 	ImVec2 size = ImGui::GetWindowSize();
-	//ImGui::BeginChild("Scrollable Content", ImVec2(0, 0), true, ImGuiWindowFlags_AlwaysHorizontalScrollbar);
 
 	ImGui::Columns(2, nullptr, false);
 	ImGui::SetColumnWidth(0, size.x / 2.f);
 	ImGui::SetColumnWidth(1, size.x / 2.f);
 
-	static int valPerRow = 16;
+	static int valPerRowQueued = 16;
+	static int valPerRow = valPerRowQueued;
 	ImGui::SetNextItemWidth(100.f);
-	ImGui::InputInt("Values Per Row", &valPerRow, 1, 2);
+	ImGui::InputInt("Values Per Row", &valPerRowQueued, 1, 2);
+	if (valPerRowQueued > 32) valPerRowQueued = 32;
 	ImGui::NextColumn();
 
-	static int dispRows = 50;
+	static int dispRowsQueued = 50;
+	static int dispRows = dispRowsQueued;
 	ImGui::SetNextItemWidth(100.f);
-	ImGui::InputInt("Rows", &dispRows, 1, 8);
+	ImGui::InputInt("Rows", &dispRowsQueued, 1, 8);
+	if (dispRowsQueued > 256) dispRowsQueued = 256;
 	ImGui::Columns(1);
 
 	static uint16_t adr = 0x0000;
 	static uint16_t adrUpdated = 0x0000;
 	char buffer[5];
 	std::snprintf(buffer, sizeof(buffer), "%X", adr);
+	ImGui::SetNextItemWidth(200.f);
 	if (ImGui::InputText("Adress", buffer, sizeof(buffer), ImGuiInputTextFlags_CharsHexadecimal | ImGuiInputTextFlags_CharsUppercase))
 	{
 		adr = std::strtol(buffer, nullptr, 16);
 	}
 	if (ImGui::Button("Search")) {
-		// Refresh Ram view
 		adrUpdated = adr;
+		dispRows = dispRowsQueued;
+		valPerRow = valPerRowQueued;
+		updateRamBuffers(adrUpdated, dispRows, valPerRow);
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Refresh")) {
+		dispRows = dispRowsQueued;
+		valPerRow = valPerRowQueued;
+		updateRamBuffers(adrUpdated, dispRows, valPerRow);
 	}
 
 	ImGui::Separator();
 
 	static bool selected;
+	bool popStyle = false;
+
 	constexpr float cellWidth = 20.f;
+	constexpr float valBrightness = 0.7f;
+
+	if (init) {
+		updateRamBuffers(adrUpdated, dispRows, valPerRow);
+	}
+
 	for (int y = -1; y < dispRows; y++)
 	{
 		for (int x = 0; x < valPerRow + 1; x++)
 		{
 			float thisCellWidth = x == 0 ? 50.f : cellWidth;
 			std::string label = "??";
+
 			if (y == -1) {
 				if (x == 0) label = " ";
-				else label = "+" + std::to_string(x + 1);
+				else label = "+" + std::to_string(x - 1);
+				popStyle = false;
 			}
 			else if (x == 0) { // adrUpdated
-				label = "0x" + int16Tohex((adr + (y) * valPerRow));
+				label = "0x" + int16Tohex((adr + y * valPerRow));
+				popStyle = false;
 			}
 			else {
-				// Write Values here
+				size_t adrWordRelToBuf = x - 1 + y * valPerRow;
+				if (adrWordRelToBuf >= m_RamBufferSize && m_isRamBufferFilled) {
+					ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.87f, 0.54f, 0.05f, 1.0f));
+				}
+				else if (m_isRamBufferFilled && m_RamBufferUpdated[adrWordRelToBuf] != m_RamBuffer[adrWordRelToBuf]) {
+					ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.9, 0.1, 0.1, 1.0f));
+				}
+				else {
+					ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(valBrightness, valBrightness, valBrightness, 1.0f));
+				}
+				label = int8ToHex(m_RamBufferUpdated[adrWordRelToBuf]);
+
+				popStyle = true;
 			}
 
 			if (x > 0) ImGui::SameLine();
-			ImGui::Selectable(label.c_str(), & selected, ImGuiSelectableFlags_None, ImVec2(thisCellWidth, 15));
+			ImGui::Selectable(label.c_str(), &selected, ImGuiSelectableFlags_None, ImVec2(thisCellWidth, 15.f));
+
+			if (popStyle) {
+				ImGui::PopStyleColor();
+			}
 		}
 	}
-	//ImGui::EndChild();
 
 	ImGui::End();
 
+	reinit = false;
 	init = false;
 }
 
@@ -1766,10 +1808,38 @@ inline uint16_t e8080::Emulator8080::regTo16(uint8_t Reg0, uint8_t Reg1) const
 	return adrOut;
 }
 
+void e8080::Emulator8080::updateRamBuffers(size_t adr, unsigned int rows, unsigned int columns)
+{
+	if (m_RamBufferUpdated) {
+		delete[] m_RamBuffer;
+		m_RamBuffer = new uint8_t[m_RamBufferUpdatedSize];
+		std::memcpy(m_RamBuffer, m_RamBufferUpdated, m_RamBufferUpdatedSize);
+		m_RamBufferSize = m_RamBufferUpdatedSize;
+
+		m_isRamBufferFilled = true;
+	}
+
+	size_t length = static_cast<size_t>(rows) * columns;
+	delete[] m_RamBufferUpdated;
+	m_RamBufferUpdated = new uint8_t[length];
+	std::memcpy(m_RamBufferUpdated, m_State.mem + adr, length);
+
+	m_RamBufferUpdatedSize = length;
+}
+
 inline const std::string e8080::Emulator8080::chToHex(char character) const
 {
 	std::ostringstream stream;
 	stream << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(static_cast<unsigned char>(character));
+	std::string str = stream.str().substr(stream.str().size() - 2);
+	std::transform(str.begin(), str.end(), str.begin(), ::toupper);
+	return str;
+}
+
+inline const std::string e8080::Emulator8080::int8ToHex(uint8_t character) const
+{
+	std::ostringstream stream;
+	stream << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(character);
 	std::string str = stream.str().substr(stream.str().size() - 2);
 	std::transform(str.begin(), str.end(), str.begin(), ::toupper);
 	return str;
