@@ -115,6 +115,14 @@ void e8080::Emulator8080::OnGuiRender()
 	static bool init = true;
 	if (!reinit) reinit = Configuration::Global::updateResize;
 
+	// Ram specific variables
+	static int dispRowsQueued = 50;
+	static int valPerRowQueued = 16;
+	if (init) {
+		m_RamDispRows = dispRowsQueued;
+		m_RamValPerRow = valPerRowQueued;
+	}
+
 	// Code Window
 	if (reinit) {
 		ImGui::SetNextWindowPos({ 10, 10 });
@@ -178,11 +186,14 @@ void e8080::Emulator8080::OnGuiRender()
 	ImGui::SetColumnWidth(1, (gl::windowSize.x / 3.f - 20) / 3.f);
 	ImGui::SetColumnWidth(2, (gl::windowSize.x / 3.f - 20) / 3.f);
 
+	ImGui::PushStyleColor(ImGuiCol_Button, { 0.0f, 0.7f, 0.7f, 1.f });
 	if (ImGui::Button("Step", { (gl::windowSize.x / 3.f - 20) / 3.f - 5.f, 30.f })) {
 		m_InExecution = false;
 		executeCurrentInstruction();
+		updateRamView();
 	}
 	ImGui::NextColumn();
+	ImGui::PopStyleColor();
 
 	if (ImGui::Button("Step Over", { (gl::windowSize.x / 3.f - 20) / 3.f - 5.f, 30.f })) {
 		m_InExecution = false;
@@ -191,17 +202,22 @@ void e8080::Emulator8080::OnGuiRender()
 	}
 	ImGui::NextColumn();
 
+	ImGui::PushStyleColor(ImGuiCol_Button, { 0.6f, 0.f, 0.1f, 1.f });
+
 	if (ImGui::Button("Halt", { (gl::windowSize.x / 3.f - 20) / 3.f - 5.f, 30.f })) {
 		m_InExecution = false;
 	}
 	ImGui::NextColumn();
+	ImGui::PopStyleColor();
 
 	ImGui::Separator();
 
+	ImGui::PushStyleColor(ImGuiCol_Button, { 0.0f, 0.5f, 0.0f, 1.f });
 	if (ImGui::Button("Run", { (gl::windowSize.x / 3.f - 20) / 3.f - 5.f, 30.f })) {
 		m_InExecution = true;
 	}
 	ImGui::NextColumn();
+	ImGui::PopStyleColor();
 
 	if (ImGui::Button("Reset PC", { (gl::windowSize.x / 3.f - 20) / 3.f - 5.f, 30.f })) {
 		m_InExecution = false;
@@ -218,6 +234,121 @@ void e8080::Emulator8080::OnGuiRender()
 
 	ImGui::End();
 
+	// Register View
+	if (reinit) {
+		ImGui::SetNextWindowPos({ gl::windowSize.x / 3.f + 20.f, 20 + gl::windowSize.y / 6.f });
+		ImGui::SetNextWindowSize({ gl::windowSize.x / 3.f - 10.f, gl::windowSize.y / 4.f });
+	}
+
+	ImGui::Begin("Registers");
+
+	ImGui::Columns(2, nullptr, false);
+	ImGui::SetColumnWidth(0, (gl::windowSize.x / 3.f - 10.f) / 2.f);
+	ImGui::SetColumnWidth(1, (gl::windowSize.x / 3.f - 10.f) / 2.f);
+
+	static int refAcc, refB, refC, refD, refE, refH, refL;
+	static int refPC, refSP;
+	static bool refZ, refS, refP, refCY, refAC;
+
+	ImGui::Text("Register");
+	ImGui::NextColumn();
+	ImGui::Text("Flags");
+	ImGui::Separator();
+	ImGui::NextColumn();
+
+	ImGui::PushStyleColor(ImGuiCol_FrameBg, { 0.0f, 0.5f, 0.5f, 1.f });
+	ImGui::SetNextItemWidth(100.f);
+	refAcc = m_State.A;
+	ImGui::InputInt("Accumulator", &refAcc);
+	m_State.A = static_cast<uint8_t>(refAcc);
+	ImGui::NextColumn();
+	ImGui::PopStyleColor();
+
+	refZ = m_State.flags.z != 0 ? true : false;
+	ImGui::Checkbox("Zero", &refZ);
+	m_State.flags.z = refZ ? 1 : 0;
+	ImGui::NextColumn();
+
+	ImGui::SetNextItemWidth(100.f);
+	refB = m_State.B;
+	ImGui::InputInt("B", &refB);
+	m_State.B = static_cast<uint8_t>(refB);
+	ImGui::NextColumn();
+
+	refS = m_State.flags.s != 0 ? true : false;
+	ImGui::Checkbox("Sign", &refS);
+	m_State.flags.s = refS ? 1 : 0;
+	ImGui::NextColumn();
+
+	ImGui::SetNextItemWidth(100.f);
+	refC = m_State.C;
+	ImGui::InputInt("C", &refC);
+	m_State.C = static_cast<uint8_t>(refC);
+	ImGui::NextColumn();
+
+	refZ = m_State.flags.p != 0 ? true : false;
+	ImGui::Checkbox("Parity", &refP);
+	m_State.flags.p = refP ? 1 : 0;
+	ImGui::NextColumn();
+
+	ImGui::SetNextItemWidth(100.f);
+	refD = m_State.D;
+	ImGui::InputInt("D", &refD);
+	m_State.D = static_cast<uint8_t>(refD);
+	ImGui::NextColumn();
+
+	refAC = m_State.flags.ac != 0 ? true : false;
+	ImGui::Checkbox("Zero", &refAC);
+	m_State.flags.ac = refAC ? 1 : 0;
+	ImGui::NextColumn();
+
+	ImGui::SetNextItemWidth(100.f);
+	refE = m_State.E;
+	ImGui::InputInt("E", &refE);
+	m_State.E = static_cast<uint8_t>(refE);
+	ImGui::NextColumn();
+
+	refCY = m_State.flags.cy != 0 ? true : false;
+	ImGui::Checkbox("Carry", &refCY);
+	m_State.flags.cy = refCY ? 1 : 0;
+	ImGui::NextColumn();
+
+	ImGui::SetNextItemWidth(100.f);
+	refH = m_State.H;
+	ImGui::InputInt("H", &refH);
+	m_State.H = static_cast<uint8_t>(refH);
+	ImGui::NextColumn();
+	ImGui::NextColumn();
+
+	ImGui::SetNextItemWidth(100.f);
+	refL = m_State.L;
+	ImGui::InputInt("L", &refL);
+	m_State.L = static_cast<uint8_t>(refL);
+
+	ImGui::Separator();
+
+	ImGui::NextColumn();
+	ImGui::NextColumn();
+
+	ImGui::PushStyleColor(ImGuiCol_FrameBg, { 0.5f, 0.5f, 0.0f, 1.f });
+	ImGui::SetNextItemWidth(100.f);
+	refPC = m_State.PC;
+	ImGui::InputInt("PC", &refPC);
+	m_State.PC = static_cast<uint16_t>(refPC);
+	ImGui::NextColumn();
+	ImGui::PopStyleColor();
+
+	ImGui::PushStyleColor(ImGuiCol_FrameBg, { 0.5f, 0.f, 0.5f, 1.f });
+	ImGui::SetNextItemWidth(100.f);
+	refSP = m_State.SP;
+	ImGui::InputInt("SP", &refSP);
+	m_State.SP = static_cast<uint16_t>(refSP);
+	ImGui::PopStyleColor();
+
+	ImGui::Columns(1);
+
+	ImGui::End();
+
 	// Ram View
 	if (reinit) {
 		ImGui::SetNextWindowPos({ gl::windowSize.x / 3.f * 2 + 20.f, 10 });
@@ -231,22 +362,17 @@ void e8080::Emulator8080::OnGuiRender()
 	ImGui::SetColumnWidth(0, size.x / 2.f);
 	ImGui::SetColumnWidth(1, size.x / 2.f);
 
-	static int valPerRowQueued = 16;
-	static int valPerRow = valPerRowQueued;
 	ImGui::SetNextItemWidth(100.f);
 	ImGui::InputInt("Values Per Row", &valPerRowQueued, 1, 2);
 	if (valPerRowQueued > 32) valPerRowQueued = 32;
 	ImGui::NextColumn();
 
-	static int dispRowsQueued = 50;
-	static int dispRows = dispRowsQueued;
 	ImGui::SetNextItemWidth(100.f);
 	ImGui::InputInt("Rows", &dispRowsQueued, 1, 8);
 	if (dispRowsQueued > 256) dispRowsQueued = 256;
 	ImGui::Columns(1);
 
 	static uint16_t adr = 0x0000;
-	static uint16_t adrUpdated = 0x0000;
 	char buffer[5];
 	std::snprintf(buffer, sizeof(buffer), "%X", adr);
 	ImGui::SetNextItemWidth(200.f);
@@ -254,17 +380,18 @@ void e8080::Emulator8080::OnGuiRender()
 	{
 		adr = std::strtol(buffer, nullptr, 16);
 	}
+	ImGui::SameLine();
 	if (ImGui::Button("Search")) {
-		adrUpdated = adr;
-		dispRows = dispRowsQueued;
-		valPerRow = valPerRowQueued;
-		updateRamBuffers(adrUpdated, dispRows, valPerRow);
+		m_RamAdrUpdated = adr;
+		m_RamDispRows = dispRowsQueued;
+		m_RamValPerRow = valPerRowQueued;
+		updateRamView();
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Refresh")) {
-		dispRows = dispRowsQueued;
-		valPerRow = valPerRowQueued;
-		updateRamBuffers(adrUpdated, dispRows, valPerRow);
+		m_RamDispRows = dispRowsQueued;
+		m_RamValPerRow = valPerRowQueued;
+		updateRamView();
 	}
 
 	ImGui::Separator();
@@ -276,12 +403,12 @@ void e8080::Emulator8080::OnGuiRender()
 	constexpr float valBrightness = 0.7f;
 
 	if (init) {
-		updateRamBuffers(adrUpdated, dispRows, valPerRow);
+		updateRamView();
 	}
 
-	for (int y = -1; y < dispRows; y++)
+	for (int y = -1; y < m_RamDispRows; y++)
 	{
-		for (int x = 0; x < valPerRow + 1; x++)
+		for (int x = 0; x < m_RamValPerRow + 1; x++)
 		{
 			float thisCellWidth = x == 0 ? 50.f : cellWidth;
 			std::string label = "??";
@@ -292,12 +419,15 @@ void e8080::Emulator8080::OnGuiRender()
 				popStyle = false;
 			}
 			else if (x == 0) { // adrUpdated
-				label = "0x" + int16Tohex((adr + y * valPerRow));
+				label = "0x" + int16Tohex((adr + y * m_RamValPerRow));
 				popStyle = false;
 			}
 			else {
-				size_t adrWordRelToBuf = x - 1 + y * valPerRow;
-				if (adrWordRelToBuf >= m_RamBufferSize && m_isRamBufferFilled) {
+				size_t adrWordRelToBuf = x - 1 + y * m_RamValPerRow;
+				if (m_RamAdrUpdated + adrWordRelToBuf == m_State.SP) {
+					ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.9, 0.1, 0.9, 1.0f));
+				}
+				else if (adrWordRelToBuf >= m_RamBufferSize && m_isRamBufferFilled) {
 					ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.87f, 0.54f, 0.05f, 1.0f));
 				}
 				else if (m_isRamBufferFilled && m_RamBufferUpdated[adrWordRelToBuf] != m_RamBuffer[adrWordRelToBuf]) {
@@ -306,6 +436,7 @@ void e8080::Emulator8080::OnGuiRender()
 				else {
 					ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(valBrightness, valBrightness, valBrightness, 1.0f));
 				}
+
 				label = int8ToHex(m_RamBufferUpdated[adrWordRelToBuf]);
 
 				popStyle = true;
@@ -1580,6 +1711,7 @@ bool e8080::Emulator8080::executeInstruction(unsigned char opcode)
 	default: break;
 	}
 
+	m_State.PC++;
 	return true;
 }
 
@@ -1806,6 +1938,11 @@ inline uint16_t e8080::Emulator8080::regTo16(uint8_t Reg0, uint8_t Reg1) const
 	adrOut += Reg1;
 
 	return adrOut;
+}
+
+void e8080::Emulator8080::updateRamView()
+{
+	updateRamBuffers(m_RamAdrUpdated, m_RamDispRows, m_RamValPerRow);
 }
 
 void e8080::Emulator8080::updateRamBuffers(size_t adr, unsigned int rows, unsigned int columns)

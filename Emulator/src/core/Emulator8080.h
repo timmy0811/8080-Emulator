@@ -51,6 +51,10 @@ namespace e8080 {
 		size_t m_RamBufferSize;
 		bool m_isRamBufferFilled;
 
+		int m_RamValPerRow;
+		int m_RamDispRows;
+		uint16_t m_RamAdrUpdated = 0x0000;
+
 		uint16_t m_SystemFlags; // ..., CodeBuffRel
 
 		// State
@@ -89,6 +93,7 @@ namespace e8080 {
 		inline uint8_t getLowerNib(uint8_t val) const;
 		inline uint8_t getHigherNib(uint8_t val) const;
 
+		void updateRamView();
 		void updateRamBuffers(size_t adr, unsigned int rows, unsigned int columns);
 		inline const std::string chToHex(char character) const;
 		inline const std::string int8ToHex(uint8_t character) const;
