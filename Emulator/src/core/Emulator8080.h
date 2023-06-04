@@ -37,7 +37,7 @@ namespace e8080 {
 		// System 8080
 		float m_ClockMHz;
 		e8080::State m_State;
-		int m_ExecutionCycleMCS = 100'0000;
+		int m_ExecutionCycleMCS = 50'0000;
 
 		// Disassembler and Storage
 		unsigned char* m_RomBuffer;
@@ -59,10 +59,13 @@ namespace e8080 {
 
 		uint16_t m_SystemFlags; // ..., CodeBuffRel
 
+		// ImGui
+		ImGuiIO& m_ImGuiIO;
+
 		// State
 		bool m_InExecution;
 		bool m_InInstructionWait;
-		bool m_AutoUpdateRAM;
+		bool m_AutoUpdateRAM = true;
 
 	private:
 		const std::string getAsssemblerLine(unsigned char opcode, size_t& ptr);

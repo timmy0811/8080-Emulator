@@ -1,7 +1,7 @@
 #include "Emulator8080.h"
 
 e8080::Emulator8080::Emulator8080()
-	:m_State(true) // Clear Ram on Init
+	:m_State(true), m_ImGuiIO(ImGui::GetIO())
 {
 	m_State.SP = 0x2200; // Set Stack pointer on work ram / 2
 }
@@ -107,8 +107,8 @@ void e8080::Emulator8080::continueProgram()
 
 void e8080::Emulator8080::OnUpdate()
 {
-	std::chrono::steady_clock::time_point timestampStart;
-	
+	static std::chrono::steady_clock::time_point timestampStart;
+
 	if (m_InExecution && m_State.PC < m_RomBufferSize) {
 		if (m_InInstructionWait) {
 			long long microseconds = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - timestampStart).count();
@@ -117,20 +117,20 @@ void e8080::Emulator8080::OnUpdate()
 			}
 		}
 		else {
-			LOGC("Executing", LOG_COLOR::SPECIAL_A);
 			timestampStart = std::chrono::high_resolution_clock::now();
 			m_InInstructionWait = true;
 
 			const unsigned char byte = *(m_RomBuffer + m_State.PC);
 			executeInstruction(byte);
-		}
 
-		if (m_AutoUpdateRAM) {
-			updateRamView();
+			if (m_AutoUpdateRAM) {
+				updateRamView();
+			}
 		}
 	}
 	else {
 		m_InInstructionWait = false;
+		m_InExecution = false;
 	}
 }
 
@@ -229,7 +229,7 @@ void e8080::Emulator8080::OnGuiRender()
 	}
 	ImGui::NextColumn();
 
-	ImGui::PushStyleColor(ImGuiCol_Button, { 0.6f, 0.f, 0.1f, 1.f });
+	ImGui::PushStyleColor(ImGuiCol_Button, { 0.6f, 0.1f, 0.1f, 1.f });
 
 	if (ImGui::Button("Halt", { (winContrSize.x - 10) / 3.f - 5.f, 30.f })) {
 		m_InExecution = false;
@@ -242,7 +242,6 @@ void e8080::Emulator8080::OnGuiRender()
 	ImGui::PushStyleColor(ImGuiCol_Button, { 0.0f, 0.5f, 0.0f, 1.f });
 	if (ImGui::Button("Run", { (winContrSize.x - 10) / 3.f - 5.f, 30.f })) {
 		m_InExecution = true;
-
 	}
 	ImGui::NextColumn();
 	ImGui::PopStyleColor();
@@ -269,6 +268,22 @@ void e8080::Emulator8080::OnGuiRender()
 	ImGui::SameLine();
 	ImGui::Checkbox("aut. upd. RAM", &m_AutoUpdateRAM);
 	ImGui::Text(fmt::format("[Res. Clockfreq.: {} Hz]", 1'000'000.f / m_ExecutionCycleMCS).c_str());
+
+	ImGui::Separator();
+	ImGui::Text("System State");
+	ImGui::Text("Current: ");
+
+	ImGui::SameLine();
+	if (m_InExecution) {
+		ImGui::PushStyleColor(ImGuiCol_Text, { 0.0f, 0.5f, 0.0f, 1.f });
+		ImGui::Text("Executing");
+		ImGui::PopStyleColor();
+	}
+	else {
+		ImGui::PushStyleColor(ImGuiCol_Text, { 0.9f, 0.2f, 0.2f, 1.f });
+		ImGui::Text("Stopped");
+		ImGui::PopStyleColor();
+	}
 
 	ImGui::End();
 
@@ -368,7 +383,7 @@ void e8080::Emulator8080::OnGuiRender()
 	ImGui::NextColumn();
 	ImGui::NextColumn();
 
-	ImGui::PushStyleColor(ImGuiCol_FrameBg, { 0.5f, 0.5f, 0.0f, 1.f });
+	ImGui::PushStyleColor(ImGuiCol_FrameBg, { 0.3f, 0.3f, 0.3f, 1.f });
 	ImGui::SetNextItemWidth(100.f);
 	refPC = m_State.PC;
 	ImGui::InputInt("PC", &refPC);
@@ -431,6 +446,14 @@ void e8080::Emulator8080::OnGuiRender()
 		m_RamValPerRow = valPerRowQueued;
 		updateRamView();
 	}
+	ImGui::SameLine();
+
+	ImGui::PushStyleColor(ImGuiCol_Button, { 0.6f, 0.1f, 0.1f, 1.f });
+	if (ImGui::Button("Clear")) {
+		std::memset(m_State.mem, 0x00, 65536);
+		updateRamView();
+	}
+	ImGui::PopStyleColor();
 
 	ImGui::Separator();
 
