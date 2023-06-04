@@ -7,8 +7,14 @@
 
 #include "core/Emulator8080.h"
 
+#define CONSOLE_HIDE
+
 int main(int argc, char* argv[]) {
 	GLFWwindow* window;
+
+#ifdef CONSOLE_HIDE
+	::ShowWindow(::GetConsoleWindow(), SW_HIDE);
+#endif
 
 	/* Initialize the library */
 	if (!glfwInit())

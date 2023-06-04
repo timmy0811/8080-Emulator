@@ -159,6 +159,31 @@ void e8080::Emulator8080::OnGuiRender()
 	ImGui::SetColumnWidth(0, (gl::windowSize.x / 3.f - 20) / 2.f);
 	ImGui::SetColumnWidth(1, (gl::windowSize.x / 3.f - 20) / 2.f);
 
+	if (ImGui::Button("Import")) {
+		nfdchar_t* outPath = NULL;
+		nfdresult_t result = NFD_OpenDialog("", NULL, &outPath);
+
+		if (result == NFD_OKAY) {
+			loadRomFromFile(outPath);
+			disassemble();
+			free(outPath);
+		}
+		else if (result == NFD_CANCEL) {
+			LOGC("Canceled selection.", LOG_COLOR::WARNING);
+		}
+		else {
+			printf("Error: %s\n", NFD_GetError());
+		}
+	}
+
+	ImGui::SameLine();
+	if (ImGui::Button("Save to file...") && m_RomDisassembled.size() > 0) {
+		saveDisassembledToFile("asm_out/" + m_RomPath);
+	}
+
+	ImGui::Separator();
+
+	ImGui::SetNextItemWidth(120.f);
 	int pcTemp = (int)m_State.PC;
 	ImGui::InputInt("PC", &pcTemp, 1);
 	m_State.PC = (uint16_t)pcTemp;

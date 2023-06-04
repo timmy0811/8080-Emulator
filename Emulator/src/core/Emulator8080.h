@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <iostream>
 #include <fmt/core.h>
 #include <iomanip>
@@ -10,6 +11,8 @@
 #include <sstream>
 
 #include "imgui/imgui.h"
+
+#include "nfd.h"
 
 #include "config.h"
 #include "Structures.h"
@@ -42,6 +45,7 @@ namespace e8080 {
 		// Disassembler and Storage
 		unsigned char* m_RomBuffer;
 		size_t m_RomBufferSize;
+		std::string m_RomName;
 		std::string m_RomPath;
 		std::string m_RomDisassembled;
 
