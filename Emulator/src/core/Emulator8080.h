@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fmt/core.h>
 #include <iomanip>
+#include <chrono>
 
 #include <string>
 #include <fstream>
@@ -36,6 +37,7 @@ namespace e8080 {
 		// System 8080
 		float m_ClockMHz;
 		e8080::State m_State;
+		int m_ExecutionCycleMCS = 100'0000;
 
 		// Disassembler and Storage
 		unsigned char* m_RomBuffer;
@@ -59,6 +61,8 @@ namespace e8080 {
 
 		// State
 		bool m_InExecution;
+		bool m_InInstructionWait;
+		bool m_AutoUpdateRAM;
 
 	private:
 		const std::string getAsssemblerLine(unsigned char opcode, size_t& ptr);

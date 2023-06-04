@@ -1,9 +1,9 @@
 ﻿  Emulator8080.cpp
-C:\Git\8080-Emulator\Emulator\src\core\Emulator8080.cpp(381,20): warning C4244: "=": Konvertierung von "long" in "uint16_t", möglicher Datenverlust
-C:\Git\8080-Emulator\Emulator\src\core\Emulator8080.cpp(428,60): warning C4305: "Argument": Verkürzung von "double" in "float"
-C:\Git\8080-Emulator\Emulator\src\core\Emulator8080.cpp(428,55): warning C4305: "Argument": Verkürzung von "double" in "float"
-C:\Git\8080-Emulator\Emulator\src\core\Emulator8080.cpp(428,50): warning C4305: "Argument": Verkürzung von "double" in "float"
-C:\Git\8080-Emulator\Emulator\src\core\Emulator8080.cpp(434,60): warning C4305: "Argument": Verkürzung von "double" in "float"
-C:\Git\8080-Emulator\Emulator\src\core\Emulator8080.cpp(434,55): warning C4305: "Argument": Verkürzung von "double" in "float"
-C:\Git\8080-Emulator\Emulator\src\core\Emulator8080.cpp(434,50): warning C4305: "Argument": Verkürzung von "double" in "float"
-  8080-Emulator.vcxproj -> C:\Git\8080-Emulator\x64\Debug\8080-Emulator.exe
+D:\Git\8080-Emulator\Emulator\src\core\Emulator8080.cpp(419,20): warning C4244: "=": Konvertierung von "long" in "uint16_t", möglicher Datenverlust
+D:\Git\8080-Emulator\Emulator\src\core\Emulator8080.cpp(466,60): warning C4305: "Argument": Verkürzung von "double" in "float"
+D:\Git\8080-Emulator\Emulator\src\core\Emulator8080.cpp(466,55): warning C4305: "Argument": Verkürzung von "double" in "float"
+D:\Git\8080-Emulator\Emulator\src\core\Emulator8080.cpp(466,50): warning C4305: "Argument": Verkürzung von "double" in "float"
+D:\Git\8080-Emulator\Emulator\src\core\Emulator8080.cpp(472,60): warning C4305: "Argument": Verkürzung von "double" in "float"
+D:\Git\8080-Emulator\Emulator\src\core\Emulator8080.cpp(472,55): warning C4305: "Argument": Verkürzung von "double" in "float"
+D:\Git\8080-Emulator\Emulator\src\core\Emulator8080.cpp(472,50): warning C4305: "Argument": Verkürzung von "double" in "float"
+  8080-Emulator.vcxproj -> D:\Git\8080-Emulator\x64\Debug\8080-Emulator.exe

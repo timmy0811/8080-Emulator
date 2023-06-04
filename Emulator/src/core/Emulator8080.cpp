@@ -107,6 +107,31 @@ void e8080::Emulator8080::continueProgram()
 
 void e8080::Emulator8080::OnUpdate()
 {
+	std::chrono::steady_clock::time_point timestampStart;
+	
+	if (m_InExecution && m_State.PC < m_RomBufferSize) {
+		if (m_InInstructionWait) {
+			long long microseconds = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - timestampStart).count();
+			if (microseconds >= m_ExecutionCycleMCS) {
+				m_InInstructionWait = false;
+			}
+		}
+		else {
+			LOGC("Executing", LOG_COLOR::SPECIAL_A);
+			timestampStart = std::chrono::high_resolution_clock::now();
+			m_InInstructionWait = true;
+
+			const unsigned char byte = *(m_RomBuffer + m_State.PC);
+			executeInstruction(byte);
+		}
+
+		if (m_AutoUpdateRAM) {
+			updateRamView();
+		}
+	}
+	else {
+		m_InInstructionWait = false;
+	}
 }
 
 void e8080::Emulator8080::OnGuiRender()
@@ -175,19 +200,21 @@ void e8080::Emulator8080::OnGuiRender()
 	ImGui::End();
 
 	// Controll Window
+	glm::vec2 winContrSize = { gl::windowSize.x / 3.f - 10.f, gl::windowSize.y / 5.f };
+
 	if (reinit) {
 		ImGui::SetNextWindowPos({ gl::windowSize.x / 3.f + 20.f, 10 });
-		ImGui::SetNextWindowSize({ gl::windowSize.x / 3.f - 10.f, gl::windowSize.y / 6.f });
+		ImGui::SetNextWindowSize({ winContrSize.x, winContrSize.y });
 	}
 
 	ImGui::Begin("Emulator Controll");
 	ImGui::Columns(3, nullptr, false);
-	ImGui::SetColumnWidth(0, (gl::windowSize.x / 3.f - 20) / 3.f);
-	ImGui::SetColumnWidth(1, (gl::windowSize.x / 3.f - 20) / 3.f);
-	ImGui::SetColumnWidth(2, (gl::windowSize.x / 3.f - 20) / 3.f);
+	ImGui::SetColumnWidth(0, (winContrSize.x - 10) / 3.f);
+	ImGui::SetColumnWidth(1, (winContrSize.x - 10) / 3.f);
+	ImGui::SetColumnWidth(2, (winContrSize.x - 10) / 3.f);
 
 	ImGui::PushStyleColor(ImGuiCol_Button, { 0.0f, 0.7f, 0.7f, 1.f });
-	if (ImGui::Button("Step", { (gl::windowSize.x / 3.f - 20) / 3.f - 5.f, 30.f })) {
+	if (ImGui::Button("Step", { (winContrSize.x - 10) / 3.f - 5.f, 30.f })) {
 		m_InExecution = false;
 		executeCurrentInstruction();
 		updateRamView();
@@ -195,7 +222,7 @@ void e8080::Emulator8080::OnGuiRender()
 	ImGui::NextColumn();
 	ImGui::PopStyleColor();
 
-	if (ImGui::Button("Step Over", { (gl::windowSize.x / 3.f - 20) / 3.f - 5.f, 30.f })) {
+	if (ImGui::Button("Step Over", { (winContrSize.x - 10) / 3.f - 5.f, 30.f })) {
 		m_InExecution = false;
 		int instructionWidth = 1; // ToDo: Get Instruction width ???
 		m_State.PC += instructionWidth;
@@ -204,7 +231,7 @@ void e8080::Emulator8080::OnGuiRender()
 
 	ImGui::PushStyleColor(ImGuiCol_Button, { 0.6f, 0.f, 0.1f, 1.f });
 
-	if (ImGui::Button("Halt", { (gl::windowSize.x / 3.f - 20) / 3.f - 5.f, 30.f })) {
+	if (ImGui::Button("Halt", { (winContrSize.x - 10) / 3.f - 5.f, 30.f })) {
 		m_InExecution = false;
 	}
 	ImGui::NextColumn();
@@ -213,30 +240,41 @@ void e8080::Emulator8080::OnGuiRender()
 	ImGui::Separator();
 
 	ImGui::PushStyleColor(ImGuiCol_Button, { 0.0f, 0.5f, 0.0f, 1.f });
-	if (ImGui::Button("Run", { (gl::windowSize.x / 3.f - 20) / 3.f - 5.f, 30.f })) {
+	if (ImGui::Button("Run", { (winContrSize.x - 10) / 3.f - 5.f, 30.f })) {
 		m_InExecution = true;
+
 	}
 	ImGui::NextColumn();
 	ImGui::PopStyleColor();
 
-	if (ImGui::Button("Reset PC", { (gl::windowSize.x / 3.f - 20) / 3.f - 5.f, 30.f })) {
+	if (ImGui::Button("Reset PC", { (winContrSize.x - 10) / 3.f - 5.f, 30.f })) {
 		m_InExecution = false;
 		m_State.PC = 0;
 	}
 	ImGui::NextColumn();
 
-	if (ImGui::Button("Reset", { (gl::windowSize.x / 3.f - 20) / 3.f - 5.f, 30.f })) {
+	if (ImGui::Button("Reset", { (winContrSize.x - 10) / 3.f - 5.f, 30.f })) {
 		m_InExecution = false;
 		m_State.PC = 0;
 		// ToDo: Reset Ram, ...
 	}
 	ImGui::Columns(1);  // Reset columns
 
+	ImGui::Separator();
+	ImGui::SetNextItemWidth(200.f);
+	ImGui::InputInt("Cycletime", &m_ExecutionCycleMCS);
+	if (m_ExecutionCycleMCS < 1) m_ExecutionCycleMCS = 1;
+	else if (m_ExecutionCycleMCS > 10'000'000) m_ExecutionCycleMCS = 10'000'000;
+
+	ImGui::SameLine();
+	ImGui::Checkbox("aut. upd. RAM", &m_AutoUpdateRAM);
+	ImGui::Text(fmt::format("[Res. Clockfreq.: {} Hz]", 1'000'000.f / m_ExecutionCycleMCS).c_str());
+
 	ImGui::End();
 
 	// Register View
 	if (reinit) {
-		ImGui::SetNextWindowPos({ gl::windowSize.x / 3.f + 20.f, 20 + gl::windowSize.y / 6.f });
+		ImGui::SetNextWindowPos({ gl::windowSize.x / 3.f + 20.f, 20 + gl::windowSize.y / 5.f });
 		ImGui::SetNextWindowSize({ gl::windowSize.x / 3.f - 10.f, gl::windowSize.y / 4.f });
 	}
 
