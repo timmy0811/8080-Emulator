@@ -8,4 +8,4 @@ The current features of the emulator are:
 * Register and flag overview
 
 ## Screenshots
-![](https://github.com/timmy0811/8080-Emulator/blob/Projects/Bild_2023-05-30_232910532.png)
+![](https://github.com/timmy0811/8080-Emulator/blob/Projects/img0.png)
